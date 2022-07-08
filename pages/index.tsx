@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   return (
@@ -18,16 +19,15 @@ const Home: NextPage = () => {
           </a>
         </h1>
         <div className="mt-5">
-          <a className="m-3 text-2xl" href="/signup">
-            Signup
-          </a>
-          <a className="m-3 text-2xl" href="/signin">
-            Signin
-          </a>
-
-          <a className="m-3 text-2xl" href="/dashboard">
-            Dashboard
-          </a>
+          <Link className="m-3 text-2xl" href="/signup">
+            <a>Signup</a>
+          </Link>
+          <Link className="m-3 text-2xl" href="/signin">
+            <a>Signin</a>
+          </Link>
+          <Link className="m-3 text-2xl" href="/dashboard">
+            <a>Dashboard</a>
+          </Link>
         </div>
       </main>
 

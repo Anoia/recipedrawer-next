@@ -33,7 +33,7 @@ const Dashboard = () => {
     };
 
     getProfile();
-  }, []);
+  }, [router]);
 
   if (!user) {
     // Currently loading asynchronously User Supabase Information
