@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../utils/supabaseClient'
 
 const SignIn = () => {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     const { error } = await supabase.auth.signIn({
       email,
       password,
-    });
+    })
 
     if (error) {
-      alert(JSON.stringify(error));
+      alert(JSON.stringify(error))
     } else {
-      router.push('/dashboard');
+      router.push('/dashboard')
     }
-  };
+  }
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-800">
@@ -65,7 +65,7 @@ const SignIn = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignIn;
+export default SignIn

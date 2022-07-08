@@ -1,7 +1,11 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
+import type { NextPage } from 'next'
+import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
+
+import { supabase } from '../utils/supabaseClient'
+
+import RecipeList from '../components/recipelist'
 
 const Home: NextPage = () => {
   return (
@@ -13,21 +17,25 @@ const Home: NextPage = () => {
 
       <main className="flex w-full flex-1 flex-col items-center justify-center px-20 text-center">
         <h1 className="text-6xl font-bold">
-          Welcome to{" "}
+          Welcome to{' '}
           <a className="text-blue-600" href="https://nextjs.org">
             Next.js!
           </a>
         </h1>
         <div className="mt-5">
-          <Link className="m-3 text-2xl" href="/signup">
-            <a>Signup</a>
+          <Link href="/signup">
+            <a className="m-3 text-2xl">Signup</a>
           </Link>
-          <Link className="m-3 text-2xl" href="/signin">
-            <a>Signin</a>
+          <Link href="/signin">
+            <a className="m-3 text-2xl">Signin</a>
           </Link>
-          <Link className="m-3 text-2xl" href="/dashboard">
-            <a>Dashboard</a>
+          <Link href="/dashboard">
+            <a className="m-3 text-2xl">Dashboard</a>
           </Link>
+        </div>
+
+        <div className="mt-5">
+          <RecipeList />
         </div>
       </main>
 
@@ -38,12 +46,12 @@ const Home: NextPage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{" "}
+          Powered by{' '}
           <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
         </a>
       </footer>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

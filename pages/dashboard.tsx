@@ -1,43 +1,44 @@
-import React, { MouseEventHandler, useEffect, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from 'react'
 
-import { User } from "@supabase/supabase-js";
-import { useRouter } from "next/router";
+import { User } from '@supabase/supabase-js'
+import { useRouter } from 'next/router'
 
-import { supabase } from "../utils/supabaseClient";
+import { supabase } from '../utils/supabaseClient'
 
 const Dashboard = () => {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>();
+  const router = useRouter()
+  const [user, setUser] = useState<User | null>()
 
   const handleLogOut: MouseEventHandler = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut()
 
     if (error) {
-      alert(JSON.stringify(error));
+      alert(JSON.stringify(error))
     } else {
-      router.push("/signin");
+      router.push('/signin')
     }
-  };
+  }
 
   useEffect(() => {
     const getProfile = () => {
-      const profile = supabase.auth.user();
+      const profile = supabase.auth.user()
 
       if (profile) {
-        setUser(profile);
+        console.log('found a user profile!')
+        setUser(profile)
       } else {
-        router.push("/signin");
+        router.push('/signin')
       }
-    };
+    }
 
-    getProfile();
-  }, [router]);
+    getProfile()
+  }, [router])
 
   if (!user) {
     // Currently loading asynchronously User Supabase Information
-    return null;
+    return null
   }
 
   return (
@@ -55,7 +56,7 @@ const Dashboard = () => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard
