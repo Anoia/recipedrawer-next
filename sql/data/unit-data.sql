@@ -1,0 +1,10 @@
+INSERT INTO public.unit (id, long_name, short_name) VALUES (2, 'Esslöffel', 'EL');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (3, 'Teelöffel', 'TL');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (4, 'Gramm', 'g');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (5, 'Kilo', 'kg');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (6, 'Milliliter', 'ml');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (7, 'Liter', 'L');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (8, 'Prise', 'Prise');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (9, 'Bund ', 'Bund');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (1, 'Stück', '');
+INSERT INTO public.unit (id, long_name, short_name) VALUES (10, 'Zentimeter', 'cm');
