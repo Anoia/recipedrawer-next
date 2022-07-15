@@ -3,8 +3,6 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { supabase } from '../utils/supabaseClient'
-
 import RecipeList from '../components/recipelist'
 
 const Home: NextPage = () => {

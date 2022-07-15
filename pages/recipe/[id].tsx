@@ -1,23 +1,12 @@
-import {
-  ingredient,
-  PrismaClient,
-  recipe,
-  recipe_ingredient,
-  unit,
-} from '@prisma/client'
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import React from 'react'
+import {
+  completeIngredient,
+  completeRecipe,
+  getRecipeForId,
+} from '../../utils/prisma/recipe'
 
-type completeIngredient = recipe_ingredient & {
-  ingredient: ingredient
-  unit: unit
-}
-
-type completeRecipe = recipe & {
-  recipe_ingredient: completeIngredient[]
-}
-
-function IngredientListTest(props: { ingredients: completeIngredient[] }) {
+function IngredientList(props: { ingredients: completeIngredient[] }) {
   return (
     <div>
       <p>ingredients: {props.ingredients.length}</p>
@@ -35,8 +24,8 @@ function IngredientListTest(props: { ingredients: completeIngredient[] }) {
 function RecipePage(data: completeRecipe) {
   return (
     <div>
-      Recipe: {data.name}
-      <IngredientListTest ingredients={data.recipe_ingredient} />
+      Recipe: {data.name} - {data.description}
+      <IngredientList ingredients={data.recipe_ingredient} />
     </div>
   )
 }
@@ -66,21 +55,4 @@ export async function getServerSideProps(
       destination: `/`,
     },
   }
-}
-
-async function getRecipeForId(id: number): Promise<completeRecipe | null> {
-  const prisma = new PrismaClient()
-  return prisma.recipe.findUnique({
-    where: {
-      id: id,
-    },
-    include: {
-      recipe_ingredient: {
-        include: {
-          ingredient: true,
-          unit: true,
-        },
-      },
-    },
-  })
 }
