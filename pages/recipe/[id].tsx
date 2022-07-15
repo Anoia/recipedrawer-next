@@ -1,24 +1,48 @@
-import { NextPage } from 'next'
-import { useRouter } from 'next/router'
-import { supabase } from '../../utils/supabaseClient'
+import { PrismaClient, recipe, recipe_ingredient } from '@prisma/client'
+import { GetServerSidePropsContext } from 'next'
 
-function RecipePage({ data }: any) {
-  return <div>Recipe: {data.name}</div>
+type completeRecipe = recipe & {
+  recipe_ingredient: recipe_ingredient[]
+}
+
+function RecipePage(data: completeRecipe) {
+  return (
+    <div>
+      Recipe: {data.name ?? 'undefined'}
+      <p>{JSON.stringify(data)}</p>
+    </div>
+  )
 }
 
 export default RecipePage
 
-export async function getServerSideProps(context: any) {
-  //const router = useRouter()
-  const { id } = context.query
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { id: queryIdString } = context.query
+  const prisma = new PrismaClient()
 
-  const { data: recipe, error } = await supabase
-    .from('recipe')
-    .select('id, name, description')
-    .eq('id', id)
+  if (queryIdString && typeof queryIdString === 'string') {
+    const id = parseInt(queryIdString)
 
-  const data = recipe && recipe.length == 1 ? recipe[0] : { name: 'error' }
+    if (!Number.isNaN(id)) {
+      const recipe = await prisma.recipe.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          recipe_ingredient: true,
+        },
+      })
 
-  // Pass data to the page via props
-  return { props: { data } }
+      if (recipe) {
+        return { props: recipe }
+      }
+    }
+  }
+
+  return {
+    redirect: {
+      permanent: false,
+      destination: `/`,
+    },
+  }
 }
