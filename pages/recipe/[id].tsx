@@ -1,37 +1,58 @@
-import { PrismaClient, recipe, recipe_ingredient } from '@prisma/client'
-import { GetServerSidePropsContext } from 'next'
+import {
+  ingredient,
+  PrismaClient,
+  recipe,
+  recipe_ingredient,
+  unit,
+} from '@prisma/client'
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
+import React from 'react'
+
+type completeIngredient = recipe_ingredient & {
+  ingredient: ingredient
+  unit: unit
+}
 
 type completeRecipe = recipe & {
-  recipe_ingredient: recipe_ingredient[]
+  recipe_ingredient: completeIngredient[]
+}
+
+function IngredientListTest(props: { ingredients: completeIngredient[] }) {
+  return (
+    <div>
+      <p>ingredients: {props.ingredients.length}</p>
+      <ul>
+        {props.ingredients.map((i) => (
+          <li key={i.id}>
+            {i.amount} {i.unit.short_name} {i.ingredient.name}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
 }
 
 function RecipePage(data: completeRecipe) {
   return (
     <div>
-      Recipe: {data.name ?? 'undefined'}
-      <p>{JSON.stringify(data)}</p>
+      Recipe: {data.name}
+      <IngredientListTest ingredients={data.recipe_ingredient} />
     </div>
   )
 }
 
 export default RecipePage
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps(
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<completeRecipe>> {
   const { id: queryIdString } = context.query
-  const prisma = new PrismaClient()
 
   if (queryIdString && typeof queryIdString === 'string') {
     const id = parseInt(queryIdString)
 
     if (!Number.isNaN(id)) {
-      const recipe = await prisma.recipe.findUnique({
-        where: {
-          id: id,
-        },
-        include: {
-          recipe_ingredient: true,
-        },
-      })
+      const recipe = await getRecipeForId(id)
 
       if (recipe) {
         return { props: recipe }
@@ -45,4 +66,21 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       destination: `/`,
     },
   }
+}
+
+async function getRecipeForId(id: number): Promise<completeRecipe | null> {
+  const prisma = new PrismaClient()
+  return prisma.recipe.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      recipe_ingredient: {
+        include: {
+          ingredient: true,
+          unit: true,
+        },
+      },
+    },
+  })
 }
