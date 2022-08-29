@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
-import React from 'react'
+import React, { Fragment } from 'react'
 import {
-  completeIngredient,
+  completeRecipeIngredient,
   completeRecipe,
   getRecipeForId,
 } from '../../utils/prisma/recipe'
@@ -12,20 +12,31 @@ function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
 }
 
-function IngredientList(props: { ingredients: completeIngredient[] }) {
+function IngredientList(props: { ingredients: completeRecipeIngredient[] }) {
   return (
     <div className="mx-3">
       <p className="text-2xl pb-3">Zutaten</p>
       <ul className="">
         {props.ingredients
           .sort((a, b) => (a.index > b.index ? 1 : 0))
-          .map((i) => (
-            <li key={i.id} className="py-2">
-              <span>
-                {i.amount} {i.unit.short_name} {i.ingredient.name}
-              </span>
-              <span className="ml-2 text-sm text-gray-600">{i.extra_info}</span>
-            </li>
+          .map((i, idx) => (
+            <Fragment key={i.id}>
+              {i.section &&
+                (idx === 0 ||
+                  props.ingredients[idx - 1].section != i.section) && (
+                  <li className="pt-3">
+                    <span className="font-extrabold">{i.section}</span>
+                  </li>
+                )}
+              <li className="py-1">
+                <span>
+                  {i.amount} {i.unit.short_name} {i.ingredient.name}
+                </span>
+                <span className="ml-2 text-sm text-gray-600">
+                  {i.extra_info}
+                </span>
+              </li>
+            </Fragment>
           ))}
       </ul>
     </div>

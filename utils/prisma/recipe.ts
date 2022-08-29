@@ -6,13 +6,13 @@ import {
   unit,
 } from '@prisma/client'
 
-export type completeIngredient = recipe_ingredient & {
+export type completeRecipeIngredient = recipe_ingredient & {
   ingredient: ingredient
   unit: unit
 }
 
 export type completeRecipe = recipe & {
-  recipe_ingredient: completeIngredient[]
+  recipe_ingredient: completeRecipeIngredient[]
 }
 
 export async function getRecipeForId(
