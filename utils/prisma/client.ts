@@ -6,11 +6,11 @@ var prismaClientGlobal: PrismaClient
 if (process.env.NODE_ENV === 'production') {
   prismaClientGlobal = new PrismaClient()
 } else {
-  if (!globalThis.prisma) {
-    globalThis.prisma = new PrismaClient()
+  if (!globalThis.prismaClientGlobal) {
+    globalThis.prismaClientGlobal = new PrismaClient()
   }
 
-  prismaClientGlobal = globalThis.prisma
+  prismaClientGlobal = globalThis.prismaClientGlobal
 }
 
 export default prismaClientGlobal
