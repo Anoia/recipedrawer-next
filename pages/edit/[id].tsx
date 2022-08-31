@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { MouseEventHandler, useState } from 'react'
 import { supabase } from '../../utils/supabaseClient'
 import { useRouter } from 'next/router'
+import StepList from '../../components/edit/steplist'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -40,24 +41,6 @@ function IngredientList(props: {
   )
 }
 
-function StepList(props: { steps: Step[] }) {
-  return (
-    <div>
-      <p className="text-2xl pb-3">Zubereitung</p>
-      <ul>
-        {props.steps?.map((s) => (
-          <li key={s.id}>
-            <div className="flex items-start my-5">
-              <span className="text-3xl mr-5">{s.id}</span>
-              <span>{s.content}</span>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
 function EditRecipePage({
   recipe,
   id,
@@ -67,6 +50,8 @@ function EditRecipePage({
 }) {
   const [name, setName] = useState(recipe.name)
   const [description, setDescription] = useState(recipe.description)
+
+  const [steps, setSteps] = useState(recipe.steps as Step[])
 
   const router = useRouter()
 
@@ -78,6 +63,7 @@ function EditRecipePage({
       .update({
         name: name,
         description: description,
+        steps: steps,
       })
       .match({ id: id })
 
@@ -133,7 +119,7 @@ function EditRecipePage({
           <IngredientList ingredients={recipe.recipe_ingredient} />
         </div>
         <div className="basis-2/3">
-          <StepList steps={recipe.steps as Step[]} />
+          <StepList steps={steps} onStepsChanged={setSteps} />
         </div>
       </div>
       <div className="flex justify-end">

@@ -1,10 +1,5 @@
-import {
-  ingredient,
-  PrismaClient,
-  recipe,
-  recipe_ingredient,
-  unit,
-} from '@prisma/client'
+import { ingredient, recipe, recipe_ingredient, unit } from '@prisma/client'
+import prismaClientGlobal from './client'
 
 export type completeRecipeIngredient = recipe_ingredient & {
   ingredient: ingredient
@@ -23,8 +18,7 @@ export type Step = {
 export async function getRecipeForId(
   id: number
 ): Promise<completeRecipe | null> {
-  const prisma = new PrismaClient()
-  return prisma.recipe.findUnique({
+  return prismaClientGlobal.recipe.findUnique({
     where: {
       id: id,
     },
