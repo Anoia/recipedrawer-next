@@ -4,9 +4,9 @@ import {
   completeRecipeIngredient,
   completeRecipe,
   getRecipeForId,
+  Step,
 } from '../../utils/prisma/recipe'
 import Image from 'next/image'
-import { Prisma } from '@prisma/client'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -43,12 +43,12 @@ function IngredientList(props: { ingredients: completeRecipeIngredient[] }) {
   )
 }
 
-function StepList(props: { steps: Prisma.JsonValue }) {
+function StepList(props: { steps: Step[] }) {
   return (
     <div>
       <p className="text-2xl pb-3">Zubereitung</p>
       <ul>
-        {props.steps?.map((s: any) => (
+        {props.steps?.map((s) => (
           <li key={s.id}>
             <div className="flex items-start my-5">
               <span className="text-3xl mr-5">{s.id}</span>
@@ -93,7 +93,7 @@ function RecipePage(data: completeRecipe) {
           <IngredientList ingredients={data.recipe_ingredient} />
         </div>
         <div className="basis-2/3">
-          <StepList steps={data.steps} />
+          <StepList steps={data.steps as Step[]} />
         </div>
       </div>
     </div>

@@ -15,6 +15,11 @@ export type completeRecipe = recipe & {
   recipe_ingredient: completeRecipeIngredient[]
 }
 
+export type Step = {
+  id: string
+  content: string
+}
+
 export async function getRecipeForId(
   id: number
 ): Promise<completeRecipe | null> {
