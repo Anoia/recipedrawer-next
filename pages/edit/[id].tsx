@@ -123,7 +123,10 @@ function EditRecipePage({
         </div>
       </div>
       <div className="flex justify-end">
-        <button className="my-24 mx-3 hover:bg-rose-800 focus:bg-rose-800 py-3 px-12 bg-rose-700 text-white">
+        <button
+          className="my-24 mx-3 hover:bg-rose-800 focus:bg-rose-800 py-3 px-12 bg-rose-700 text-white"
+          onClick={() => router.push(`/recipe/${id}`)}
+        >
           Abbrechen
         </button>
         <button

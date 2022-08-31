@@ -12,6 +12,7 @@ export type completeRecipe = recipe & {
 
 export type Step = {
   content: string
+  id: string
 }
 
 export async function getRecipeForId(

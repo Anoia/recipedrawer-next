@@ -12,12 +12,15 @@
     "babel-plugin-superjson-next": "^0.4.3",
     "next": "latest",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "react-sortablejs": "^6.1.4",
+    "sortablejs": "^1.15.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.35",
     "@types/react": "^18.0.9",
     "@types/react-dom": "18.0.5",
+    "@types/sortablejs": "^1.13.0",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "autoprefixer": "^10.4.7",
