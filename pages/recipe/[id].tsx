@@ -7,6 +7,8 @@ import {
   Step,
 } from '../../utils/prisma/recipe'
 import Image from 'next/image'
+import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -62,8 +64,12 @@ function StepList(props: { steps: Step[] }) {
 }
 
 function RecipePage(data: completeRecipe) {
+  const router = useRouter()
   return (
-    <div className="container mx-auto my-24 max-w-4xl">
+    <div className="container mx-auto my-12 max-w-4xl">
+      <Head>
+        <title>{data.name} - Recipe Drawer</title>
+      </Head>
       <div className="bg-slate-600 h-80 relative">
         {data.image && (
           <Image
@@ -95,6 +101,14 @@ function RecipePage(data: completeRecipe) {
         <div className="basis-2/3">
           <StepList steps={data.steps as Step[]} />
         </div>
+      </div>
+      <div className="flex justify-end">
+        <button
+          className="my-24 mx-3 hover:bg-slate-800 focus:bg-slate-800 py-3 px-12 bg-slate-700 text-white"
+          onClick={() => router.push(`/edit/${data.id}`)}
+        >
+          Bearbeiten
+        </button>
       </div>
     </div>
   )

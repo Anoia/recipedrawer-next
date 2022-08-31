@@ -76,7 +76,7 @@ function EditRecipePage({
   }
 
   return (
-    <div className="container mx-auto my-24 max-w-4xl">
+    <div className="container mx-auto  my-12 max-w-4xl">
       <div className="bg-slate-600 h-80 relative">
         {recipe.image && (
           <Image
