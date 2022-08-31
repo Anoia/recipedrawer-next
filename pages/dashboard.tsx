@@ -17,7 +17,7 @@ const Dashboard = () => {
     if (error) {
       alert(JSON.stringify(error))
     } else {
-      router.push('/signin')
+      router.push('/')
     }
   }
 
