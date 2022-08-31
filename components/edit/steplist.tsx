@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { generateRandomId } from '../../utils/stuff'
 import { ReactSortable } from 'react-sortablejs'
 import { Step } from '../../utils/prisma/recipe'
@@ -12,13 +12,20 @@ function StepList(props: {
   steps: Step[]
   onStepsChanged: (s: Step[]) => void
 }) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const textAreaRefs: HTMLTextAreaElement[] = []
+
+  const [added, setAdded] = useState(0)
 
   useEffect(() => {
     for (const textAreaRef of textAreaRefs) {
       resizeTextArea(textAreaRef)
     }
-  })
+    if (added) {
+      textAreaRefs[added].focus()
+      setAdded(() => 0)
+    }
+  }, [added, setAdded, textAreaRefs])
 
   const textChangedHandler = (
     e: ChangeEvent<HTMLTextAreaElement>,
@@ -34,16 +41,17 @@ function StepList(props: {
     props.onStepsChanged(newSteps)
   }
 
-  const addNewStep = () => {
-    if (props.steps[props.steps.length - 1].content.trim() === '') {
-      textAreaRefs[textAreaRefs.length - 1].focus()
+  const addNewStep = (currentIdx: number) => {
+    if (props.steps[currentIdx].content.trim() === '') {
+      textAreaRefs[currentIdx].focus()
     } else {
       const newSteps = [...props.steps]
-      const idx = newSteps.length
-      newSteps[idx] = {
+      const newIdx = currentIdx + 1
+      newSteps.splice(newIdx, 0, {
         content: '',
         id: generateRandomId(),
-      }
+      })
+      setAdded(() => newIdx)
       props.onStepsChanged(newSteps)
     }
   }
@@ -52,6 +60,15 @@ function StepList(props: {
     const newSteps = [...props.steps]
     newSteps.splice(idx, 1)
     props.onStepsChanged(newSteps)
+  }
+
+  const keyDownHandler = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+    idx: number
+  ) => {
+    if (e.ctrlKey && e.code === 'Enter') {
+      addNewStep(idx)
+    }
   }
 
   return (
@@ -78,6 +95,7 @@ function StepList(props: {
                   className="bg-transparent focus:outline-none overflow-hidden resize-none grow  border border-transparent focus:border-gray-400 hover:focus:border-solid focus:ring-0 hover:border-dashed hover:border-gray-500"
                   value={s.content}
                   onChange={(e) => textChangedHandler(e, idx)}
+                  onKeyDown={(e) => keyDownHandler(e, idx)}
                 />
                 <div>
                   <button
@@ -106,7 +124,10 @@ function StepList(props: {
         </ReactSortable>
       </ul>
       <div className="flex justify-center">
-        <button className="text-4xl hover:font-bold" onClick={addNewStep}>
+        <button
+          className="text-4xl hover:font-bold"
+          onClick={() => addNewStep(textAreaRefs.length - 1)}
+        >
           +
         </button>
       </div>
