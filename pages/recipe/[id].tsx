@@ -48,10 +48,10 @@ function StepList(props: { steps: Step[] }) {
     <div>
       <p className="text-2xl pb-3">Zubereitung</p>
       <ul>
-        {props.steps?.map((s) => (
-          <li key={s.id}>
+        {props.steps?.map((s, idx) => (
+          <li key={idx}>
             <div className="flex items-start my-5">
-              <span className="text-3xl mr-5">{s.id}</span>
+              <span className="text-3xl mr-5">{idx + 1}</span>
               <span>{s.content}</span>
             </div>
           </li>

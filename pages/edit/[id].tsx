@@ -1,5 +1,5 @@
 import { unit } from '@prisma/client'
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import { getRecipeForId, Step } from '../../utils/prisma/recipe'
 import Image from 'next/image'
 import { MouseEventHandler, useState } from 'react'

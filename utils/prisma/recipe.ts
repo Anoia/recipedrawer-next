@@ -11,7 +11,6 @@ export type completeRecipe = recipe & {
 }
 
 export type Step = {
-  id: string
   content: string
 }
 
