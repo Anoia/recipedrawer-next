@@ -2,7 +2,9 @@ import { unit } from '@prisma/client'
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { getRecipeForId, Step } from '../../utils/prisma/recipe'
 import Image from 'next/image'
-import { useState } from 'react'
+import { MouseEventHandler, useState } from 'react'
+import { supabase } from '../../utils/supabaseClient'
+import { useRouter } from 'next/router'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -56,16 +58,43 @@ function StepList(props: { steps: Step[] }) {
   )
 }
 
-function EditRecipePage(initialData: EditableRecipe) {
-  const [name, setName] = useState(initialData.name)
-  const [description, setDescription] = useState(initialData.description)
+function EditRecipePage({
+  recipe,
+  id,
+}: {
+  recipe: EditableRecipe
+  id: number
+}) {
+  const [name, setName] = useState(recipe.name)
+  const [description, setDescription] = useState(recipe.description)
+
+  const router = useRouter()
+
+  const handleSave: MouseEventHandler = async (e) => {
+    e.preventDefault
+    console.log('saving recipe')
+    const { data, error } = await supabase
+      .from('recipe')
+      .update({
+        name: name,
+        description: description,
+      })
+      .match({ id: id })
+
+    if (error) {
+      console.log(error)
+    } else {
+      console.log(data)
+      router.push(`/edit/${id}`)
+    }
+  }
 
   return (
     <div className="container mx-auto my-24 max-w-4xl">
       <div className="bg-slate-600 h-80 relative">
-        {initialData.image && (
+        {recipe.image && (
           <Image
-            src={calulateImagePath(initialData.image)}
+            src={calulateImagePath(recipe.image)}
             layout="fill"
             objectFit="cover"
             alt="alt text"
@@ -93,19 +122,30 @@ function EditRecipePage(initialData: EditableRecipe) {
         <div className="">
           <div className="flex flex-nowrap">
             <span className="mx-3 whitespace-nowrap">
-              {initialData.portions} Portionen
+              {recipe.portions} Portionen
             </span>
-            <span className="mx-3 whitespace-nowrap"> {initialData.diet}</span>
+            <span className="mx-3 whitespace-nowrap"> {recipe.diet}</span>
           </div>
         </div>
       </div>
       <div className="flex gap-20">
         <div className="basis-1/3">
-          <IngredientList ingredients={initialData.recipe_ingredient} />
+          <IngredientList ingredients={recipe.recipe_ingredient} />
         </div>
         <div className="basis-2/3">
-          <StepList steps={initialData.steps as Step[]} />
+          <StepList steps={recipe.steps as Step[]} />
         </div>
+      </div>
+      <div className="flex justify-end">
+        <button className="my-24 mx-3 hover:bg-rose-800 focus:bg-rose-800 py-3 px-12 bg-rose-700 text-white">
+          Abbrechen
+        </button>
+        <button
+          className="my-24 mx-3 hover:bg-teal-800 focus:bg-teal-800 py-3 px-12 bg-teal-700 text-white"
+          onClick={handleSave}
+        >
+          Speichern
+        </button>
       </div>
     </div>
   )
@@ -113,9 +153,7 @@ function EditRecipePage(initialData: EditableRecipe) {
 
 export default EditRecipePage
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext
-): Promise<GetServerSidePropsResult<EditableRecipe>> {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { id: queryIdString } = context.query
 
   if (queryIdString && typeof queryIdString === 'string') {
@@ -162,7 +200,12 @@ export async function getServerSideProps(
           steps: recipe.steps as Step[],
         }
 
-        return { props: editable }
+        return {
+          props: {
+            recipe: editable,
+            id: recipe ? id : -1,
+          },
+        }
       }
     }
   }
