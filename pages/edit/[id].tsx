@@ -6,6 +6,7 @@ import { MouseEventHandler, useState } from 'react'
 import { supabase } from '../../utils/supabaseClient'
 import { useRouter } from 'next/router'
 import StepList from '../../components/edit/steplist'
+import { Maybe } from '../../utils/parseIngredient'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -219,7 +220,7 @@ export type TypedRecipeIngredient = {
   amount: number
   unit: unit
   diet: string
-  extraInfo: string | null
+  extraInfo: Maybe<string>
 }
 
 export type EditableRecipe = {

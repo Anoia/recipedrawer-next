@@ -10,6 +10,7 @@
     "@prisma/client": "^4.0.0",
     "@supabase/supabase-js": "^1.35.4",
     "babel-plugin-superjson-next": "^0.4.3",
+    "fuzzysort": "^2.0.1",
     "next": "latest",
     "react": "18.1.0",
     "react-dom": "18.1.0",
