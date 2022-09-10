@@ -18,7 +18,7 @@ function IngredientInput(props: {
   input: string
   selectIngredient: (i: TypedRecipeIngredient) => void
 }) {
-  const [ingredients, setIngredients] = useState<Array<ingredient>>([])
+  const [ingredients, setIngredients] = useState<Array<ingredient>>([]) // TODO use context or pass in, sonst laedt vermutlich jedes input feld die daten runter..
   const [units, setUnits] = useState<Array<unit>>([])
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -231,13 +231,6 @@ function IngredientInput(props: {
     return (
       <div className="max-w-2xl w-full">
         <div>
-          <p>
-            <span>Selection {currentIngredientSelectionIndex}: </span>
-            <span>
-              {fuzzyIngredients[currentIngredientSelectionIndex]?.name}
-            </span>
-          </p>
-          <p>{JSON.stringify(matchResult)}</p>
           <input
             className="border text-xl mt-5 w-full"
             type="text"

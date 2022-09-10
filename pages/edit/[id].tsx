@@ -7,6 +7,7 @@ import { supabase } from '../../utils/supabaseClient'
 import { useRouter } from 'next/router'
 import StepList from '../../components/edit/steplist'
 import { Maybe } from '../../utils/parseIngredient'
+import IngredientInput from '../../components/edit/ingredientinput'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -14,6 +15,10 @@ function calulateImagePath(img: string) {
 
 function IngredientList(props: {
   ingredients: Array<TypedRecipeIngredient | TypedRecipeSection>
+
+  onIngredientsChanged: (
+    i: Array<TypedRecipeIngredient | TypedRecipeSection>
+  ) => void
 }) {
   const ingredientComponents = props.ingredients.map((i, idx) => {
     if (i.type === 'ingredient') {
@@ -38,6 +43,14 @@ function IngredientList(props: {
     <div className="mx-3">
       <p className="text-2xl pb-3">Zutaten</p>
       <ul className="">{ingredientComponents}</ul>
+      <IngredientInput
+        elementId="autocomplete"
+        input=""
+        selectIngredient={(i: TypedRecipeIngredient) => {
+          console.log(`adding ${i.name}`)
+          props.onIngredientsChanged([...props.ingredients, i])
+        }}
+      />
     </div>
   )
 }
@@ -52,6 +65,7 @@ function EditRecipePage({
   const [name, setName] = useState(recipe.name)
   const [description, setDescription] = useState(recipe.description)
 
+  const [ingredients, setIngredients] = useState(recipe.recipe_ingredient)
   const [steps, setSteps] = useState(recipe.steps as Step[])
 
   const router = useRouter()
@@ -117,7 +131,10 @@ function EditRecipePage({
       </div>
       <div className="flex gap-20">
         <div className="basis-1/3">
-          <IngredientList ingredients={recipe.recipe_ingredient} />
+          <IngredientList
+            ingredients={ingredients}
+            onIngredientsChanged={setIngredients}
+          />
         </div>
         <div className="basis-2/3">
           <StepList steps={steps} onStepsChanged={setSteps} />
