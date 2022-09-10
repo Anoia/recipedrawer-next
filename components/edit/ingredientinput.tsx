@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { TypedRecipeIngredient } from '../../pages/edit/[id]'
 import { extractRecipeMatchResult, Maybe } from '../../utils/parseIngredient'
 import { supabase } from '../../utils/supabaseClient'
+import CreateIngredient from './createingredient'
 
 export type IngredientSelection = {
   amount: number
@@ -19,6 +20,8 @@ function IngredientInput(props: {
 }) {
   const [ingredients, setIngredients] = useState<Array<ingredient>>([])
   const [units, setUnits] = useState<Array<unit>>([])
+
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -231,7 +234,7 @@ function IngredientInput(props: {
           />
           {showAutocomplete() && (
             <div
-              className="max-h-28 overflow-y-auto scrollbar-hide"
+              className="max-h-28 overflow-y-auto scrollbar-hide border"
               id={`${props.elementId}-wrapper`}
             >
               <ul>
@@ -254,6 +257,21 @@ function IngredientInput(props: {
             </div>
           )}
         </div>
+        <CreateIngredient
+          isOpen={dialogOpen}
+          input={matchResult?.ingredientString ?? ''}
+          close={() => setDialogOpen(false)}
+          created={(i: ingredient) => {
+            setIngredients((oldList) => [...oldList, i])
+            setDialogOpen(false)
+          }}
+        />
+        <button
+          className="m-3 p-3 border border-slate-600 w-32"
+          onClick={() => setDialogOpen(true)}
+        >
+          Open Dialog
+        </button>
       </div>
     )
   } else {
