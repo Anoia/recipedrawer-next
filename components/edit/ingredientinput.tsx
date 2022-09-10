@@ -90,16 +90,28 @@ function IngredientInput(props: {
   }, [userInputString, units])
 
   function calcFuzzy(target: string, ingredients: ingredient[]) {
-    return fuzzysort.go(target, ingredients, {
-      key: 'name',
-      all: true,
-      threshold: -50000,
+    const fuzzySortResult = fuzzysort
+      .go(target, ingredients, {
+        key: 'name',
+        all: true,
+        threshold: -50000,
+      })
+      .map((f) => f.obj)
+
+    fuzzySortResult.push({
+      id: -1,
+      created_at: new Date(),
+      name: 'Neue Zutat anlegen',
+      recipe_id: null,
+      diet: 'vegan',
     })
+
+    return fuzzySortResult
   }
 
-  const [fuzzyIngredients, setFuzzyIngredients] = useState<
-    Fuzzysort.KeyResults<ingredient>
-  >(calcFuzzy('', ingredients))
+  const [fuzzyIngredients, setFuzzyIngredients] = useState<Array<ingredient>>(
+    calcFuzzy('', ingredients)
+  )
 
   useEffect(() => {
     setFuzzyIngredients(
@@ -150,7 +162,7 @@ function IngredientInput(props: {
     }
 
     if (e.key == 'Enter') {
-      select()
+      doSelect()
     }
   }
 
@@ -189,25 +201,29 @@ function IngredientInput(props: {
     }
   }
 
-  const select = () => {
+  const doSelect = () => {
     if (matchResult) {
-      const selected = fuzzyIngredients[currentIngredientSelectionIndex]?.obj
+      const selected = fuzzyIngredients[currentIngredientSelectionIndex]
 
-      const result: TypedRecipeIngredient = {
-        type: 'ingredient',
-        name: selected.name,
-        id: undefined,
-        ingredient_id: selected.id,
-        amount: matchResult.amount,
-        unit: matchResult.unit || units[0],
-        diet: selected.diet,
-        extraInfo: matchResult.extraInfo,
+      if (selected.id === -1) {
+        setDialogOpen(true)
+      } else {
+        const result: TypedRecipeIngredient = {
+          type: 'ingredient',
+          name: selected.name,
+          id: undefined,
+          ingredient_id: selected.id,
+          amount: matchResult.amount,
+          unit: matchResult.unit || units[0],
+          diet: selected.diet,
+          extraInfo: matchResult.extraInfo,
+        }
+
+        props.selectIngredient(result)
+        setuserInputString(props.input)
+        setCurrentIngredientSelectionIndex(0)
+        blur()
       }
-
-      props.selectIngredient(result)
-      setuserInputString(props.input)
-      setCurrentIngredientSelectionIndex(0)
-      blur()
     }
   }
 
@@ -218,7 +234,7 @@ function IngredientInput(props: {
           <p>
             <span>Selection {currentIngredientSelectionIndex}: </span>
             <span>
-              {fuzzyIngredients[currentIngredientSelectionIndex]?.obj.name}
+              {fuzzyIngredients[currentIngredientSelectionIndex]?.name}
             </span>
           </p>
           <p>{JSON.stringify(matchResult)}</p>
@@ -229,7 +245,7 @@ function IngredientInput(props: {
             onChange={(e) => setuserInputString(e.target.value)}
             onFocus={() => setInputFocused(true)}
             onBlur={() => setInputFocused(false)}
-            onKeyDown={handleKey}
+            onKeyUp={handleKey}
             placeholder="100g Mehl"
           />
           {showAutocomplete() && (
@@ -241,16 +257,16 @@ function IngredientInput(props: {
                 {fuzzyIngredients.map((i, idx) => (
                   <li
                     id={`autocompleteingredient-${idx}`}
-                    key={i.obj.id}
+                    key={i.id}
                     className={
-                      currentIngredientSelectionIndex == idx
+                      (currentIngredientSelectionIndex == idx
                         ? 'bg-slate-300'
-                        : ''
+                        : '') + ' last:border-t-2'
                     }
                     onMouseEnter={() => setCurrentIngredientSelectionIndex(idx)}
-                    onMouseDown={select}
+                    onMouseDown={doSelect}
                   >
-                    {i.obj.name}
+                    {i.name}
                   </li>
                 ))}
               </ul>
@@ -266,12 +282,6 @@ function IngredientInput(props: {
             setDialogOpen(false)
           }}
         />
-        <button
-          className="m-3 p-3 border border-slate-600 w-32"
-          onClick={() => setDialogOpen(true)}
-        >
-          Open Dialog
-        </button>
       </div>
     )
   } else {
