@@ -7,52 +7,10 @@ import { supabase } from '../../utils/supabaseClient'
 import { useRouter } from 'next/router'
 import StepList from '../../components/edit/steplist'
 import { Maybe } from '../../utils/parseIngredient'
-import IngredientInput from '../../components/edit/ingredientinput'
+import IngredientList from '../../components/edit/ingredientlist'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
-}
-
-function IngredientList(props: {
-  ingredients: Array<TypedRecipeIngredient | TypedRecipeSection>
-
-  onIngredientsChanged: (
-    i: Array<TypedRecipeIngredient | TypedRecipeSection>
-  ) => void
-}) {
-  const ingredientComponents = props.ingredients.map((i, idx) => {
-    if (i.type === 'ingredient') {
-      return (
-        <li className="py-1" key={`${i.name}-${idx}`}>
-          <span>
-            {i.amount} {i.unit.short_name} {i.name}
-          </span>
-          <span className="ml-2 text-sm text-gray-600">{i.extraInfo}</span>
-        </li>
-      )
-    } else {
-      return (
-        <li className="pt-3" key={`${i.name}-${idx}`}>
-          <span className="font-extrabold">{i.name}</span>
-        </li>
-      )
-    }
-  })
-
-  return (
-    <div className="mx-3">
-      <p className="text-2xl pb-3">Zutaten</p>
-      <ul className="">{ingredientComponents}</ul>
-      <IngredientInput
-        elementId="autocomplete"
-        input=""
-        selectIngredient={(i: TypedRecipeIngredient) => {
-          console.log(`adding ${i.name}`)
-          props.onIngredientsChanged([...props.ingredients, i])
-        }}
-      />
-    </div>
-  )
 }
 
 function EditRecipePage({

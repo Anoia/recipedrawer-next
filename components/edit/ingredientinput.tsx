@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { TypedRecipeIngredient } from '../../pages/edit/[id]'
 import { extractRecipeMatchResult, Maybe } from '../../utils/parseIngredient'
 import { supabase } from '../../utils/supabaseClient'
+import StandardInput, { StandardInputLabel } from '../lib/styledcomponents'
 import CreateIngredient from './createingredient'
 
 export type IngredientSelection = {
@@ -231,8 +232,11 @@ function IngredientInput(props: {
     return (
       <div className="max-w-2xl w-full">
         <div>
-          <input
-            className="border text-xl mt-5 w-full"
+          <StandardInputLabel className="mt-12">
+            Neue Zutat hinzufügen
+          </StandardInputLabel>
+          <StandardInput
+            className="text-xl"
             type="text"
             value={userInputString}
             onChange={(e) => setuserInputString(e.target.value)}
