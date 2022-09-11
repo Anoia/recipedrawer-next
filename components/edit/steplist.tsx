@@ -42,7 +42,7 @@ function StepList(props: {
   }
 
   const addNewStep = (currentIdx: number) => {
-    if (props.steps[currentIdx].content.trim() === '') {
+    if (props.steps[currentIdx]?.content.trim() === '') {
       textAreaRefs[currentIdx].focus()
     } else {
       const newSteps = [...props.steps]
