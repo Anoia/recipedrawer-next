@@ -2,8 +2,7 @@ import { unit } from '@prisma/client'
 import { GetServerSidePropsContext } from 'next'
 import { getRecipeForId, Step } from '../../utils/prisma/recipe'
 import Image from 'next/image'
-import { MouseEventHandler, useState } from 'react'
-import { supabase } from '../../utils/supabaseClient'
+import { MouseEventHandler, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import StepList from '../../components/edit/steplist'
 import { Maybe } from '../../utils/parseIngredient'
@@ -26,25 +25,52 @@ function EditRecipePage({
   const [ingredients, setIngredients] = useState(recipe.recipe_ingredient)
   const [steps, setSteps] = useState(recipe.steps as Step[])
 
+  const [diet, setDiet] = useState(recipe.diet)
+
+  useEffect(() => {
+    const dietOrder = ['vegan', 'vegetarian', 'fish', 'meat']
+
+    const dietIndex = ingredients.reduce((prev, current) => {
+      if (current.type === 'ingredient') {
+        return Math.max(dietOrder.indexOf(current.diet), prev)
+      } else {
+        return prev
+      }
+    }, 0)
+    setDiet(dietOrder[dietIndex])
+  }, [ingredients])
+
   const router = useRouter()
 
   const handleSave: MouseEventHandler = async (e) => {
     e.preventDefault
-    console.log('saving recipe')
-    const { data, error } = await supabase
-      .from('recipe')
-      .update({
-        name: name,
-        description: description,
-        steps: steps,
-      })
-      .match({ id: id })
 
-    if (error) {
-      console.log(error)
+    const resultingRecipe: EditableRecipe = {
+      name: name,
+      description: description,
+      steps: steps,
+      recipe_ingredient: ingredients,
+      portions: recipe.portions, //todo
+      diet: diet,
+      image: recipe.image, //todo
+    }
+
+    const response = await fetch(`/api/edit/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(resultingRecipe),
+    })
+
+    if (response.status === 200) {
+      router.push(`/recipe/${id}`)
     } else {
-      console.log(data)
-      router.push(`/edit/${id}`)
+      console.log(
+        `error during saving, got status ${response.status}: ${JSON.stringify(
+          response.body
+        )}`
+      )
     }
   }
 
@@ -83,7 +109,7 @@ function EditRecipePage({
             <span className="mx-3 whitespace-nowrap">
               {recipe.portions} Portionen
             </span>
-            <span className="mx-3 whitespace-nowrap"> {recipe.diet}</span>
+            <span className="mx-3 whitespace-nowrap"> {diet}</span>
           </div>
         </div>
       </div>
@@ -131,7 +157,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         let lastSectionName: string | undefined = undefined
 
         const ingredients = recipe.recipe_ingredient
-          .sort((a, b) => (a.index > b.index ? 1 : 0))
+          .sort((a, b) => (a.index < b.index ? -1 : 1))
           .reduce((prev, current) => {
             if (current.section && current.section != lastSectionName) {
               prev.push({

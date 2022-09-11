@@ -23,7 +23,7 @@ function SectionInput(props: { addSection: (x: TypedRecipeSection) => void }) {
         Neuen Abschnitt hinzufügen
       </StandardInputLabel>
       <StandardInput
-        placeholder="Add section"
+        placeholder="z.B. Für die Streusel"
         value={section}
         onKeyDown={keyDownHandler}
         onChange={(e: ChangeEvent<HTMLInputElement>) =>

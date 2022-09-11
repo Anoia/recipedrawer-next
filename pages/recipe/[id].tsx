@@ -20,7 +20,7 @@ function IngredientList(props: { ingredients: completeRecipeIngredient[] }) {
       <p className="text-2xl pb-3">Zutaten</p>
       <ul className="">
         {props.ingredients
-          .sort((a, b) => (a.index > b.index ? 1 : 0))
+          .sort((a, b) => (a.index < b.index ? -1 : 1))
           .map((i, idx) => (
             <Fragment key={i.id}>
               {i.section &&
