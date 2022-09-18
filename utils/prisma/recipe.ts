@@ -80,6 +80,11 @@ export async function saveRecipe(
       portions: recipe.portions,
       image: recipe.image,
       recipe_ingredient: {
+        deleteMany: [
+          {
+            id: { notIn: deleteNotIn },
+          },
+        ],
         create: recipeIngredients
           .filter((i) => i.id == undefined)
           .map((i) => {
@@ -97,11 +102,6 @@ export async function saveRecipe(
               data: rest,
             }
           }),
-        deleteMany: [
-          {
-            id: { notIn: deleteNotIn },
-          },
-        ],
       },
     },
   })

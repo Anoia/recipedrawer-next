@@ -5,6 +5,7 @@ import { EditableRecipe } from '../../edit/[id]'
 
 type Data = { id: number; name: string }
 
+// TODO AUTH!
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -19,6 +20,6 @@ export default async function handler(
     const result = await saveRecipe(id as number, input)
     res.status(200).json({ id: result.id, name: result.name })
   } else {
-    console.log('not expected query')
+    console.log('unexpected query')
   }
 }

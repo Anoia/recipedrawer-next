@@ -3,7 +3,6 @@ import fuzzysort from 'fuzzysort'
 import { useEffect, useState } from 'react'
 import { TypedRecipeIngredient } from '../../pages/edit/[id]'
 import { extractRecipeMatchResult, Maybe } from '../../utils/parseIngredient'
-import { supabase } from '../../utils/supabaseClient'
 import StandardInput, { StandardInputLabel } from '../lib/styledcomponents'
 import CreateIngredient from './createingredient'
 
@@ -15,35 +14,15 @@ export type IngredientSelection = {
 }
 
 function IngredientInput(props: {
+  ingredients: Array<ingredient>
+  units: Array<unit>
   elementId: string
   input: string
   selectIngredient: (i: TypedRecipeIngredient) => void
+  createdNewIngredient: (i: ingredient) => void
+  blur?: () => void
 }) {
-  const [ingredients, setIngredients] = useState<Array<ingredient>>([]) // TODO use context or pass in, sonst laedt vermutlich jedes input feld die daten runter..
-  const [units, setUnits] = useState<Array<unit>>([])
-
   const [dialogOpen, setDialogOpen] = useState(false)
-
-  useEffect(() => {
-    const fetchIngredients = async () => {
-      const { data, error } = await supabase
-        .from<ingredient>('ingredient')
-        .select('*')
-
-      if (error) console.log(JSON.stringify(error))
-      if (data) setIngredients(data)
-    }
-
-    const fetchUnits = async () => {
-      const { data, error } = await supabase.from<unit>('unit').select('*')
-
-      if (error) console.log(JSON.stringify(error))
-      if (data) setUnits(data)
-    }
-
-    fetchIngredients()
-    fetchUnits()
-  }, [props])
 
   const [isInputFocused, setInputFocused] = useState(false)
   const [userInputString, setuserInputString] = useState(props.input)
@@ -53,9 +32,14 @@ function IngredientInput(props: {
   const [matchResult, setMatchResult] =
     useState<Maybe<IngredientSelection>>(undefined)
 
+  // useEffect(
+  //   () => document.getElementById(`${props.elementId}-input`)?.focus(),
+  //   [props]
+  // )
+
   useEffect(() => {
     function findExactUnitMatch(unitName: string): Maybe<unit> {
-      return units.find(
+      return props.units.find(
         (u) =>
           u.long_name.toLowerCase() === unitName.toLowerCase() ||
           u.short_name.toLowerCase() === unitName.toLowerCase()
@@ -88,7 +72,7 @@ function IngredientInput(props: {
     } else {
       setMatchResult(undefined)
     }
-  }, [userInputString, units])
+  }, [userInputString, props.units])
 
   function calcFuzzy(target: string, ingredients: ingredient[]) {
     const fuzzySortResult = fuzzysort
@@ -111,14 +95,14 @@ function IngredientInput(props: {
   }
 
   const [fuzzyIngredients, setFuzzyIngredients] = useState<Array<ingredient>>(
-    calcFuzzy('', ingredients)
+    calcFuzzy('', props.ingredients)
   )
 
   useEffect(() => {
     setFuzzyIngredients(
-      calcFuzzy(matchResult?.ingredientString ?? '', ingredients)
+      calcFuzzy(matchResult?.ingredientString ?? '', props.ingredients)
     )
-  }, [ingredients, matchResult])
+  }, [props.ingredients, matchResult])
 
   function escapeReg(i: string) {
     return i.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -126,7 +110,7 @@ function IngredientInput(props: {
 
   function findPossibleUnits(unitName: string): unit[] {
     const regexp = new RegExp(escapeReg(unitName.trim()), 'i')
-    return units.filter(
+    return props.units.filter(
       (u) => u.long_name.match(regexp) || u.short_name.match(regexp)
     )
   }
@@ -164,6 +148,11 @@ function IngredientInput(props: {
 
     if (e.key == 'Enter') {
       doSelect()
+    }
+
+    if (e.key == 'Escape') {
+      const inputElem = document.getElementById(`${props.elementId}-input`)
+      inputElem?.blur()
     }
   }
 
@@ -215,7 +204,7 @@ function IngredientInput(props: {
           id: undefined,
           ingredient_id: selected.id,
           amount: matchResult.amount,
-          unit: matchResult.unit || units[0],
+          unit: matchResult.unit || props.units[0],
           diet: selected.diet,
           extraInfo: matchResult.extraInfo,
         }
@@ -223,31 +212,39 @@ function IngredientInput(props: {
         props.selectIngredient(result)
         setuserInputString(props.input)
         setCurrentIngredientSelectionIndex(0)
-        blur()
       }
     }
   }
 
-  if (units.length > 0 && ingredients.length > 0) {
+  const onBlur = () => {
+    setuserInputString(props.input)
+    setInputFocused(false)
+    if (props.blur) {
+      props.blur()
+    }
+  }
+
+  if (props.units.length > 0 && props.ingredients.length > 0) {
     return (
       <div className="max-w-2xl w-full">
         <div>
-          <StandardInputLabel className="mt-12">
-            Neue Zutat hinzufügen
-          </StandardInputLabel>
+          {props.input == '' && (
+            <StandardInputLabel>Neue Zutat hinzufügen</StandardInputLabel>
+          )}
           <StandardInput
             className="text-xl"
             type="text"
             value={userInputString}
             onChange={(e) => setuserInputString(e.target.value)}
             onFocus={() => setInputFocused(true)}
-            onBlur={() => setInputFocused(false)}
+            onBlur={onBlur}
             onKeyUp={handleKey}
             placeholder="100g Mehl"
+            id={`${props.elementId}-input`}
           />
           {showAutocomplete() && (
             <div
-              className="max-h-28 overflow-y-auto scrollbar-hide border"
+              className="max-h-28 overflow-y-auto scrollbar-hide border bg-gray-50"
               id={`${props.elementId}-wrapper`}
             >
               <ul>
@@ -275,7 +272,7 @@ function IngredientInput(props: {
           input={matchResult?.ingredientString ?? ''}
           close={() => setDialogOpen(false)}
           created={(i: ingredient) => {
-            setIngredients((oldList) => [...oldList, i])
+            props.createdNewIngredient(i)
             setDialogOpen(false)
           }}
         />
