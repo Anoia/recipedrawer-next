@@ -32,11 +32,6 @@ function IngredientInput(props: {
   const [matchResult, setMatchResult] =
     useState<Maybe<IngredientSelection>>(undefined)
 
-  // useEffect(
-  //   () => document.getElementById(`${props.elementId}-input`)?.focus(),
-  //   [props]
-  // )
-
   useEffect(() => {
     function findExactUnitMatch(unitName: string): Maybe<unit> {
       return props.units.find(

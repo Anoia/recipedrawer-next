@@ -83,7 +83,6 @@ function IngredientList(props: {
             key={`${i.name}-${idx}`}
             onClick={() => setCurrentlyEditing(idx)}
           >
-            {/* <span className="font-semibold"></span> */}
             <span className="">
               {i.amount} {i.unit.short_name}{' '}
             </span>
