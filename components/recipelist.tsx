@@ -15,11 +15,11 @@ function RecipeCard(props: any) {
     <div className=" py-6 px-6 w-1/3 ">
       <Link href={`/recipe/${recipe.id}`}>
         <a>
-          <div className="rounded-lg shadow-lg  max-w-sm  h-80 flex flex-col">
-            <div className=" rounded-t-lg bg-slate-600 flex-1  relative">
+          <div className=" border shadow-md border-gray-300  max-w-sm  h-80 flex flex-col">
+            <div className="  bg-slate-600 flex-1  relative">
               {recipe.image && (
                 <Image
-                  className="rounded-t-lg "
+                  className=" "
                   src={calulateImagePath(recipe.image)}
                   layout="fill"
                   objectFit="cover"
