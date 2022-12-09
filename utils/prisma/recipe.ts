@@ -44,7 +44,7 @@ export async function saveRecipe(
     (prev, current, index) => {
       if (current.type === 'ingredient') {
         const newIngredient: recipe_ingredient = {
-          id: current.id,
+          id: typeof current.id === 'number' ? current.id : -1,
           ingredient_id: current.ingredient_id,
           recipe_id: id,
           unit_id: current.unit.id,
@@ -86,14 +86,14 @@ export async function saveRecipe(
           },
         ],
         create: recipeIngredients
-          .filter((i) => i.id == undefined)
+          .filter((i) => i.id == -1)
           .map((i) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { recipe_id, ...rest } = i
             return rest
           }),
         update: recipeIngredients
-          .filter((i) => i.id != undefined)
+          .filter((i) => i.id != -1)
           .map((i) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { recipe_id, ...rest } = i

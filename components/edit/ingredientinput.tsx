@@ -196,7 +196,7 @@ function IngredientInput(props: {
         const result: TypedRecipeIngredient = {
           type: 'ingredient',
           name: selected.name,
-          id: undefined,
+          id: Date.now().toString(),
           ingredient_id: selected.id,
           amount: matchResult.amount,
           unit: matchResult.unit || props.units[0],

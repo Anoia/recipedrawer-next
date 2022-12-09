@@ -1,21 +1,22 @@
 import { NextPage } from 'next'
 import { useState } from 'react'
-import IngredientInput from '../components/edit/ingredientinput'
+// import IngredientInput from '../components/edit/ingredientinput'
 import { TypedRecipeIngredient } from './edit/[id]'
 
 const Test: NextPage = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selected, setSelected] = useState(Array<TypedRecipeIngredient>())
 
   return (
     <div className="flex flex-col justify-center mx-auto my-12 max-w-4xl">
-      <IngredientInput
+      {/* <IngredientInput
         elementId={'autocomplete'}
         input={''}
         selectIngredient={(i: TypedRecipeIngredient) => {
           console.log(`adding ${i.name}`)
           setSelected((s) => [...s, i])
         }}
-      ></IngredientInput>
+      ></IngredientInput> */}
       <div>
         <p className="mt-5">selection:</p>
         <div>

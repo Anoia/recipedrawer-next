@@ -1,21 +1,24 @@
 import { ingredient, unit } from '@prisma/client'
 import { useEffect, useState } from 'react'
 import {
+  IngredientOrSection,
   TypedRecipeIngredient,
   TypedRecipeSection,
 } from '../../pages/edit/[id]'
 import { supabase } from '../../utils/supabaseClient'
 import IngredientInput from './ingredientinput'
 import SectionInput from './sectioninput'
+import { ReactSortable } from 'react-sortablejs'
 
 function IngredientList(props: {
-  ingredients: Array<TypedRecipeIngredient | TypedRecipeSection>
+  ingredients: Array<IngredientOrSection>
 
-  onIngredientsChanged: (
-    i: Array<TypedRecipeIngredient | TypedRecipeSection>
-  ) => void
+  onIngredientsChanged: (i: Array<IngredientOrSection>) => void
 }) {
-  const [currentlyEditing, setCurrentlyEditing] = useState(-1)
+  const [currentlyEditingIngredient, setCurrentlyEditingIngredient] =
+    useState(-1)
+
+  const [currentlyReorganizing, setCurrentlyReorganizing] = useState(false)
 
   const [ingredients, setIngredients] = useState<Array<ingredient>>([])
   const [units, setUnits] = useState<Array<unit>>([])
@@ -42,85 +45,110 @@ function IngredientList(props: {
   }, [])
 
   useEffect(() => {
-    if (currentlyEditing > -1) {
+    if (currentlyEditingIngredient > -1) {
       document
         .getElementById(
-          `autocomplete-${props.ingredients[currentlyEditing].name}-${currentlyEditing}-input`
+          `autocomplete-${props.ingredients[currentlyEditingIngredient].name}-${currentlyEditingIngredient}-input`
         )
         ?.focus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentlyEditing])
+  }, [currentlyEditingIngredient])
+
+  const sectionDisplay = (s: TypedRecipeSection) => (
+    <span className="pt-3 font-extrabold">{s.name}</span>
+  )
+
+  const ingredientDisplay = (i: TypedRecipeIngredient, idx: number) => (
+    <div className="py-1" onClick={() => setCurrentlyEditingIngredient(idx)}>
+      <span className="">
+        {i.amount} {i.unit.short_name}{' '}
+      </span>
+      <span>{i.name}</span>
+      <span className="ml-2 text-sm text-gray-600">{i.extraInfo}</span>
+    </div>
+  )
+
+  const ingredientEditing = (i: TypedRecipeIngredient, idx: number) => (
+    <div className="py-1">
+      <IngredientInput
+        ingredients={ingredients}
+        units={units}
+        elementId={`autocomplete-${i.name}-${idx}`}
+        input={
+          `${i.amount} ${i.unit.short_name} ${i.name}` +
+          (i.extraInfo ? `((${i.extraInfo}))` : '')
+        }
+        selectIngredient={(newI: TypedRecipeIngredient) => {
+          const ings = [...props.ingredients]
+          ings[idx] = { ...newI, id: i.id }
+          props.onIngredientsChanged(ings)
+          setCurrentlyEditingIngredient(-1)
+        }}
+        createdNewIngredient={(i) => setIngredients((old) => [...old, i])}
+        blur={() => setCurrentlyEditingIngredient(-1)}
+      />
+    </div>
+  )
 
   const ingredientComponents = props.ingredients.map((i, idx) => {
-    if (i.type === 'ingredient') {
-      if (currentlyEditing === idx) {
-        return (
-          <li className="py-1" key={`${i.name}-${idx}`}>
-            <IngredientInput
-              ingredients={ingredients}
-              units={units}
-              elementId={`autocomplete-${i.name}-${idx}`}
-              input={
-                `${i.amount} ${i.unit.short_name} ${i.name}` +
-                (i.extraInfo ? `((${i.extraInfo}))` : '')
-              }
-              selectIngredient={(newI: TypedRecipeIngredient) => {
-                const ings = [...props.ingredients]
-                ings[idx] = { ...newI, id: i.id }
-                props.onIngredientsChanged(ings)
-                setCurrentlyEditing(-1)
-              }}
-              createdNewIngredient={(i) => setIngredients((old) => [...old, i])}
-              blur={() => setCurrentlyEditing(-1)}
-            />
-          </li>
-        )
-      } else {
-        return (
-          <li
-            className="py-1"
-            key={`${i.name}-${idx}`}
-            onClick={() => setCurrentlyEditing(idx)}
-          >
-            <span className="">
-              {i.amount} {i.unit.short_name}{' '}
-            </span>
-            <span>{i.name}</span>
-            <span className="ml-2 text-sm text-gray-600">{i.extraInfo}</span>
-          </li>
-        )
-      }
-    } else {
-      return (
-        <li className="pt-3" key={`${i.name}-${idx}`}>
-          <span className="font-extrabold">{i.name}</span>
-        </li>
-      )
-    }
+    return (
+      <li key={`${i.name}-${idx}`}>
+        {i.type === 'ingredient'
+          ? currentlyEditingIngredient === idx && !currentlyReorganizing
+            ? ingredientEditing(i, idx)
+            : ingredientDisplay(i, idx)
+          : sectionDisplay(i)}
+      </li>
+    )
   })
 
   return (
     <div className="mx-3">
+      <button
+        className={` font-bold float-right ${
+          currentlyReorganizing ? 'text-rose-700' : 'text-teal-700'
+        }`}
+        onClick={() => setCurrentlyReorganizing((c) => !c)}
+      >
+        {currentlyReorganizing ? 'zurück' : 'umsortieren'}
+      </button>
       <p className="text-2xl pb-3">Zutaten</p>
-      <ul className="">{ingredientComponents}</ul>
+      <ul className="">
+        {currentlyReorganizing ? (
+          <ReactSortable
+            ghostClass="bg-gray-100"
+            dragClass="bg-gray-200"
+            list={props.ingredients}
+            setList={(newList) => props.onIngredientsChanged(newList)}
+          >
+            {ingredientComponents}
+          </ReactSortable>
+        ) : (
+          ingredientComponents
+        )}
+      </ul>
       <p className="mt-12" />
-      <IngredientInput
-        ingredients={ingredients}
-        units={units}
-        elementId="autocomplete"
-        input=""
-        selectIngredient={(i: TypedRecipeIngredient) => {
-          console.log(`adding ${i.name}`)
-          props.onIngredientsChanged([...props.ingredients, i])
-        }}
-        createdNewIngredient={(i) => setIngredients((old) => [...old, i])}
-      />
-      <SectionInput
-        addSection={(s: TypedRecipeSection) =>
-          props.onIngredientsChanged([...props.ingredients, s])
-        }
-      />
+      {!currentlyReorganizing && (
+        <>
+          <IngredientInput
+            ingredients={ingredients}
+            units={units}
+            elementId="autocomplete"
+            input=""
+            selectIngredient={(i: TypedRecipeIngredient) => {
+              console.log(`adding ${i.name}`)
+              props.onIngredientsChanged([...props.ingredients, i])
+            }}
+            createdNewIngredient={(i) => setIngredients((old) => [...old, i])}
+          />
+          <SectionInput
+            addSection={(s: TypedRecipeSection) =>
+              props.onIngredientsChanged([...props.ingredients, s])
+            }
+          />
+        </>
+      )}
     </div>
   )
 }

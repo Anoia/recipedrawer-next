@@ -163,13 +163,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
               prev.push({
                 type: 'section',
                 name: current.section,
+                id: current.section,
               })
               lastSectionName = current.section
             }
 
             prev.push({
               type: 'ingredient',
-              id: current.id,
+              id: current.id ?? Date.now().toString(),
               amount: current.amount,
               ingredient_id: current.ingredient.id,
               name: current.ingredient.name,
@@ -179,7 +180,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             })
 
             return prev
-          }, Array<TypedRecipeIngredient | TypedRecipeSection>())
+          }, Array<IngredientOrSection>())
 
         const editable: EditableRecipe = {
           name: recipe.name,
@@ -208,15 +209,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
+export type IngredientOrSection = TypedRecipeIngredient | TypedRecipeSection
+
 export type TypedRecipeSection = {
   type: 'section'
   name: string
+  id: string
 }
 
 export type TypedRecipeIngredient = {
   type: 'ingredient'
   name: string
-  id: number | undefined
+  id: number | string
   ingredient_id: number
   amount: number
   unit: unit

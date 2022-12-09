@@ -11,6 +11,7 @@ function SectionInput(props: { addSection: (x: TypedRecipeSection) => void }) {
         props.addSection({
           type: 'section',
           name: section,
+          id: section,
         })
       }
       setSection('')
