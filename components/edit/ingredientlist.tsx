@@ -55,17 +55,41 @@ function IngredientList(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentlyEditingIngredient])
 
-  const sectionDisplay = (s: TypedRecipeSection) => (
-    <span className="pt-3 font-extrabold">{s.name}</span>
+  const deleteButton = (idx: number) => (
+    <button
+      className="px-1 bg-red-800 text-white"
+      onClick={() => {
+        const ings = [...props.ingredients]
+        ings.splice(idx, 1)
+        props.onIngredientsChanged(ings)
+      }}
+    >
+      X
+    </button>
+  )
+
+  const sectionDisplay = (s: TypedRecipeSection, idx: number) => (
+    <>
+      <span className="pt-3 font-extrabold">{s.name}</span>
+      {currentlyReorganizing && deleteButton(idx)}
+    </>
   )
 
   const ingredientDisplay = (i: TypedRecipeIngredient, idx: number) => (
-    <div className="py-1" onClick={() => setCurrentlyEditingIngredient(idx)}>
+    <div
+      className="py-1"
+      onClick={() =>
+        currentlyReorganizing
+          ? setCurrentlyEditingIngredient(-1)
+          : setCurrentlyEditingIngredient(idx)
+      }
+    >
       <span className="">
         {i.amount} {i.unit.short_name}{' '}
       </span>
       <span>{i.name}</span>
-      <span className="ml-2 text-sm text-gray-600">{i.extraInfo}</span>
+      <span className="ml-2 text-sm text-gray-600">{i.extraInfo} </span>
+      {currentlyReorganizing && deleteButton(idx)}
     </div>
   )
 
@@ -98,7 +122,7 @@ function IngredientList(props: {
           ? currentlyEditingIngredient === idx && !currentlyReorganizing
             ? ingredientEditing(i, idx)
             : ingredientDisplay(i, idx)
-          : sectionDisplay(i)}
+          : sectionDisplay(i, idx)}
       </li>
     )
   })
@@ -115,18 +139,15 @@ function IngredientList(props: {
       </button>
       <p className="text-2xl pb-3">Zutaten</p>
       <ul className="">
-        {currentlyReorganizing ? (
-          <ReactSortable
-            ghostClass="bg-gray-100"
-            dragClass="bg-gray-200"
-            list={props.ingredients}
-            setList={(newList) => props.onIngredientsChanged(newList)}
-          >
-            {ingredientComponents}
-          </ReactSortable>
-        ) : (
-          ingredientComponents
-        )}
+        <ReactSortable
+          ghostClass="bg-gray-100"
+          dragClass="bg-gray-200"
+          list={props.ingredients}
+          disabled={!currentlyReorganizing}
+          setList={(newList) => props.onIngredientsChanged(newList)}
+        >
+          {ingredientComponents}
+        </ReactSortable>
       </ul>
       <p className="mt-12" />
       {!currentlyReorganizing && (
