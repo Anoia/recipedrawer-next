@@ -1,4 +1,9 @@
-import { MouseEventHandler, useEffect, useState } from 'react'
+import {
+  ChangeEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useState,
+} from 'react'
 import { EditableRecipe } from '../pages/edit/[id]'
 import { Step } from '../utils/prisma/recipe'
 import IngredientList from './edit/ingredientlist'
@@ -16,6 +21,7 @@ function Editorcreate(props: {
 }) {
   const [name, setName] = useState(props.recipe.name)
   const [description, setDescription] = useState(props.recipe.description)
+  const [image, setImage] = useState(props.recipe.image)
 
   const [ingredients, setIngredients] = useState(props.recipe.recipe_ingredient)
   const [steps, setSteps] = useState(props.recipe.steps as Step[])
@@ -45,9 +51,30 @@ function Editorcreate(props: {
       recipe_ingredient: ingredients,
       portions: props.recipe.portions, //todo
       diet: diet,
-      image: props.recipe.image, //todo
+      image: image,
     }
     props.save(resultingRecipe)
+  }
+
+  const uploadFile: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    if (e.target.files) {
+      const file = e.target.files[0]
+
+      const formData = new FormData()
+
+      formData.append('file', file)
+      formData.append('upload_preset', 'cookbook_recipe')
+
+      const response = await fetch(
+        'https://api.cloudinary.com/v1_1/ddqdrc3ak/image/upload',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
+      const responseJson = await response.json()
+      setImage(responseJson?.public_id ?? '')
+    }
   }
 
   return (
@@ -55,12 +82,15 @@ function Editorcreate(props: {
       <div className="bg-slate-600 h-80 relative">
         {props.recipe.image && (
           <Image
-            src={calulateImagePath(props.recipe.image)}
+            src={calulateImagePath(image)}
             layout="fill"
             objectFit="cover"
             alt="alt text"
           />
         )}
+      </div>
+      <div>
+        <input type="file" onChange={uploadFile} />
       </div>
       <div className="my-16 flex justify-between items-baseline">
         <div className="">
