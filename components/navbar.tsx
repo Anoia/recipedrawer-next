@@ -37,13 +37,18 @@ function Navbar() {
           </Fragment>
         )}
         {user && (
-          <Link href="/dashboard" className="m-3 text-xl">
-            Dashboard
-          </Link>
+          <Fragment>
+            <Link href="/dashboard" className="m-3 text-xl">
+              Dashboard
+            </Link>
+            <Link href="/create" className="m-3 text-xl">
+              Create
+            </Link>
+          </Fragment>
         )}
       </div>
     </div>
-  );
+  )
 }
 
 export default Navbar

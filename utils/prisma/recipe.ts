@@ -1,5 +1,9 @@
 import { ingredient, recipe, recipe_ingredient, unit } from '@prisma/client'
-import { EditableRecipe } from '../../pages/edit/[id]'
+import {
+  EditableRecipe,
+  TypedRecipeIngredient,
+  TypedRecipeSection,
+} from '../../pages/edit/[id]'
 import prismaClientGlobal from './client'
 
 export type completeRecipeIngredient = recipe_ingredient & {
@@ -34,42 +38,72 @@ export async function getRecipeForId(
   })
 }
 
+export type new_recipe_ingredient = {
+  ingredient_id: number
+  amount: number
+  unit_id: number
+  index: number
+  section: string | null
+  extra_info: string | null
+}
+
+export type updated_recipe_ingredient = new_recipe_ingredient & { id: number }
+
+export type create_update_ingredients = {
+  new: Array<new_recipe_ingredient>
+  updated: Array<updated_recipe_ingredient>
+}
+
+function getEmptyCreateUpdateIngredients(): create_update_ingredients {
+  return {
+    new: Array<new_recipe_ingredient>(),
+    updated: Array<updated_recipe_ingredient>(),
+  }
+}
+
+function transformSectionsAndIngredients(
+  recipe_ingredient: Array<TypedRecipeIngredient | TypedRecipeSection>
+): create_update_ingredients {
+  let currentSectionName: string | undefined = undefined
+
+  return recipe_ingredient.reduce((createUpdateResult, current, index) => {
+    if (current.type === 'ingredient') {
+      const newR: new_recipe_ingredient = {
+        ingredient_id: current.ingredient_id,
+        unit_id: current.unit.id,
+        amount: current.amount,
+        extra_info: current.extraInfo ?? null,
+        index: index,
+        section: currentSectionName ?? null,
+      }
+
+      if (typeof current.id === 'number') {
+        const up: updated_recipe_ingredient = {
+          id: current.id,
+          ...newR,
+        }
+        createUpdateResult.updated.push(up)
+        return createUpdateResult
+      } else {
+        createUpdateResult.new.push(newR)
+        return createUpdateResult
+      }
+    } else {
+      currentSectionName = current.name
+      return createUpdateResult
+    }
+  }, getEmptyCreateUpdateIngredients())
+}
+
 export async function saveRecipe(
   id: number,
   recipe: EditableRecipe
 ): Promise<recipe> {
-  let currentSectionName: string | undefined = undefined
-
-  const recipeIngredients = recipe.recipe_ingredient.reduce(
-    (prev, current, index) => {
-      if (current.type === 'ingredient') {
-        const newIngredient: recipe_ingredient = {
-          id: typeof current.id === 'number' ? current.id : -1,
-          ingredient_id: current.ingredient_id,
-          recipe_id: id,
-          unit_id: current.unit.id,
-          amount: current.amount,
-          extra_info: current.extraInfo ?? null,
-          index: index,
-          section: currentSectionName ?? null,
-        }
-        prev.push(newIngredient)
-        return prev
-      } else {
-        currentSectionName = current.name
-        return prev
-      }
-    },
-    Array<recipe_ingredient>()
+  const recipeIngredients = transformSectionsAndIngredients(
+    recipe.recipe_ingredient
   )
 
-  const deleteNotIn: number[] = []
-
-  recipeIngredients.forEach((i) => {
-    if (i.id) {
-      deleteNotIn.push(i.id)
-    }
-  })
+  const deleteNotIn: number[] = recipeIngredients.updated.map((i) => i.id)
 
   const result = await prismaClientGlobal.recipe.update({
     where: { id: id },
@@ -79,29 +113,41 @@ export async function saveRecipe(
       diet: recipe.diet,
       portions: recipe.portions,
       image: recipe.image,
+      steps: recipe.steps,
       recipe_ingredient: {
         deleteMany: [
           {
             id: { notIn: deleteNotIn },
           },
         ],
-        create: recipeIngredients
-          .filter((i) => i.id == -1)
-          .map((i) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { recipe_id, ...rest } = i
-            return rest
-          }),
-        update: recipeIngredients
-          .filter((i) => i.id != -1)
-          .map((i) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { recipe_id, ...rest } = i
-            return {
-              where: { id: i.id },
-              data: rest,
-            }
-          }),
+        create: recipeIngredients.new,
+        update: recipeIngredients.updated.map((i) => {
+          return {
+            where: { id: i.id },
+            data: i,
+          }
+        }),
+      },
+    },
+  })
+  return result
+}
+
+export async function createRecipe(recipe: EditableRecipe): Promise<recipe> {
+  const recipeIngredients = transformSectionsAndIngredients(
+    recipe.recipe_ingredient
+  )
+
+  const result = await prismaClientGlobal.recipe.create({
+    data: {
+      name: recipe.name,
+      description: recipe.description,
+      diet: recipe.diet,
+      portions: recipe.portions,
+      image: recipe.image,
+      steps: recipe.steps,
+      recipe_ingredient: {
+        create: recipeIngredients.new,
       },
     },
   })
