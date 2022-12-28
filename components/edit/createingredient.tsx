@@ -33,10 +33,13 @@ function CreateIngredient(props: {
 
   const create = async () => {
     if (newIngredientName.trim() != '') {
-      const { data, error } = await supabase.from('ingredient').insert({
-        name: newIngredientName,
-        diet: diet,
-      })
+      const { data, error } = await supabase
+        .from('ingredient')
+        .insert({
+          name: newIngredientName,
+          diet: diet,
+        })
+        .select()
 
       if (error) {
         console.log(error)

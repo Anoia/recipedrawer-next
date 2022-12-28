@@ -7,11 +7,11 @@ function Navbar() {
   const [user, setUser] = useState<User | null>()
 
   useEffect(() => {
-    const getProfile = () => {
-      const profile = supabase.auth.user()
+    const getProfile = async () => {
+      const profile = await supabase.auth.getUser()
 
       if (profile) {
-        setUser(profile)
+        setUser(profile.data.user)
       } else {
         setUser(null)
       }

@@ -22,14 +22,13 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    const getProfile = () => {
-      const profile = supabase.auth.user()
+    const getProfile = async () => {
+      const profile = await supabase.auth.getUser()
 
       if (profile) {
-        console.log('found a user profile!')
-        setUser(profile)
+        setUser(profile.data.user)
       } else {
-        router.push('/signin')
+        setUser(null)
       }
     }
 

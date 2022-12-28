@@ -25,16 +25,14 @@ function IngredientList(props: {
 
   useEffect(() => {
     const fetchIngredients = async () => {
-      const { data, error } = await supabase
-        .from<ingredient>('ingredient')
-        .select('*')
+      const { data, error } = await supabase.from('ingredient').select('*')
 
       if (error) console.log(JSON.stringify(error))
       if (data) setIngredients(data)
     }
 
     const fetchUnits = async () => {
-      const { data, error } = await supabase.from<unit>('unit').select('*')
+      const { data, error } = await supabase.from('unit').select('*')
 
       if (error) console.log(JSON.stringify(error))
       if (data) setUnits(data)

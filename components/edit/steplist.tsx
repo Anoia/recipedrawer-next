@@ -92,7 +92,7 @@ function StepList(props: {
                   ref={(t) => {
                     if (t) textAreaRefs[idx] = t
                   }}
-                  className="bg-transparent focus:outline-none overflow-hidden resize-none grow  border border-transparent focus:border-gray-400 hover:focus:border-solid focus:ring-0 hover:border-dashed hover:border-gray-500"
+                  className="bg-transparent focus:bg-gray-50 focus:outline-none overflow-hidden resize-none grow  border border-transparent focus:border-gray-400 hover:focus:border-solid focus:ring-0 hover:border-dashed hover:border-gray-500"
                   value={s.content}
                   onChange={(e) => textChangedHandler(e, idx)}
                   onKeyDown={(e) => keyDownHandler(e, idx)}
