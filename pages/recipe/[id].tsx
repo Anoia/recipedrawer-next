@@ -6,7 +6,7 @@ import {
   getRecipeForId,
   Step,
 } from '../../utils/prisma/recipe'
-import Image from 'next/image'
+import Image from "next/legacy/image";
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 

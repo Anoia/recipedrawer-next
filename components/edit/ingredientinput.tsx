@@ -100,7 +100,7 @@ function IngredientInput(props: {
   }, [props.ingredients, matchResult])
 
   function escapeReg(i: string) {
-    return i.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return i.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   function findPossibleUnits(unitName: string): unit[] {

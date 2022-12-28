@@ -22,28 +22,28 @@ function Navbar() {
 
   return (
     <div className="bg-slate-700 text-white flex flex-col w-full items-center justify-center px-20 text-center">
-      <Link href="/">
-        <a className="mt-6 text-4xl font-bold">Welcome to Recipe Drawer</a>
+      <Link href="/" className="mt-6 text-4xl font-bold">
+        Welcome to Recipe Drawer
       </Link>
       <div className="m-6">
         {!user && (
           <Fragment>
-            <Link href="/signup">
-              <a className="m-3 text-xl">Signup</a>
+            <Link href="/signup" className="m-3 text-xl">
+              Signup
             </Link>
-            <Link href="/signin">
-              <a className="m-3 text-xl">Signin</a>
+            <Link href="/signin" className="m-3 text-xl">
+              Signin
             </Link>
           </Fragment>
         )}
         {user && (
-          <Link href="/dashboard">
-            <a className="m-3 text-xl">Dashboard</a>
+          <Link href="/dashboard" className="m-3 text-xl">
+            Dashboard
           </Link>
         )}
       </div>
     </div>
-  )
+  );
 }
 
 export default Navbar

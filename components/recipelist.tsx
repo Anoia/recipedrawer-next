@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 import { useEffect, useState } from 'react'
 import { supabase } from '../utils/supabaseClient'
 
@@ -12,42 +12,6 @@ function RecipeCard(props: any) {
   const recipe = props.recipe
 
   return (
-    <div className=" py-6 px-6 w-1/3 ">
-      <Link href={`/recipe/${recipe.id}`}>
-        <a>
-          <div className=" border shadow-md border-gray-300  max-w-sm  h-80 flex flex-col">
-            <div className="  bg-slate-600 flex-1  relative">
-              {recipe.image && (
-                <Image
-                  className=" "
-                  src={calulateImagePath(recipe.image)}
-                  layout="fill"
-                  objectFit="cover"
-                  // width="100%"
-                  // height="100%"
-                  alt="alt text"
-                />
-              )}
-            </div>
-            <div className="p-5 text-left">
-              <h5 className="text-gray-900 text-xl font-medium ">
-                {recipe.name}
-              </h5>
-              {/* <p className="text-gray-700 text-base mb-4">
-                {recipe.description}
-              </p> */}
-              {/* <button
-            type="button"
-            className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-          >
-            Button
-          </button> */}
-            </div>
-          </div>
-        </a>
-      </Link>
-    </div>
-
     // <li>
     //   <Link href={`/recipe/${recipe.id}`}>
     //     <a>
@@ -55,6 +19,39 @@ function RecipeCard(props: any) {
     //     </a>
     //   </Link>
     // </li>
+    <div className=" py-6 px-6 w-1/3 ">
+      <Link href={`/recipe/${recipe.id}`}>
+        <div className=" border shadow-md border-gray-300  max-w-sm  h-80 flex flex-col">
+          <div className="  bg-slate-600 flex-1  relative">
+            {recipe.image && (
+              <Image
+                className=" "
+                src={calulateImagePath(recipe.image)}
+                layout="fill"
+                objectFit="cover"
+                // width="100%"
+                // height="100%"
+                alt="alt text"
+              />
+            )}
+          </div>
+          <div className="p-5 text-left">
+            <h5 className="text-gray-900 text-xl font-medium ">
+              {recipe.name}
+            </h5>
+            {/* <p className="text-gray-700 text-base mb-4">
+              {recipe.description}
+            </p> */}
+            {/* <button
+          type="button"
+          className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+        >
+          Button
+        </button> */}
+          </div>
+        </div>
+      </Link>
+    </div>
   )
 }
 
