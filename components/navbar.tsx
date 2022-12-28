@@ -42,7 +42,10 @@ function Navbar() {
               Dashboard
             </Link>
             <Link href="/create" className="m-3 text-xl">
-              Create
+              Create Recipe
+            </Link>
+            <Link href="/units" className="m-3 text-xl">
+              Units
             </Link>
           </Fragment>
         )}
