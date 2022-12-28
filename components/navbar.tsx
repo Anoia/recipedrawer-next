@@ -44,6 +44,9 @@ function Navbar() {
             <Link href="/create" className="m-3 text-xl">
               Create Recipe
             </Link>
+            <Link href="/ingredients" className="m-3 text-xl">
+              Ingredients
+            </Link>
             <Link href="/units" className="m-3 text-xl">
               Units
             </Link>
