@@ -18,7 +18,7 @@ function Navbar() {
     }
 
     getProfile()
-  })
+  }, [])
 
   return (
     <div className="bg-slate-700 text-white flex flex-col w-full items-center justify-center px-20 text-center">
