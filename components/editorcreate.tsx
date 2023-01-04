@@ -23,6 +23,8 @@ function Editorcreate(props: {
   const [description, setDescription] = useState(props.recipe.description)
   const [image, setImage] = useState(props.recipe.image)
 
+  const [portions, setPortions] = useState(props.recipe.portions)
+
   const [ingredients, setIngredients] = useState(props.recipe.recipe_ingredient)
   const [steps, setSteps] = useState(props.recipe.steps as Step[])
 
@@ -49,7 +51,7 @@ function Editorcreate(props: {
       description: description,
       steps: steps,
       recipe_ingredient: ingredients,
-      portions: props.recipe.portions, //todo
+      portions: portions,
       diet: diet,
       image: image,
     }
@@ -112,9 +114,14 @@ function Editorcreate(props: {
         </div>
         <div className="">
           <div className="flex flex-nowrap">
-            <span className="mx-3 whitespace-nowrap">
-              {props.recipe.portions} Portionen
-            </span>
+            <span className="mx-3 pl-3 whitespace-nowrap"> Portionen:</span>
+            <input
+              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+              type="number"
+              value={portions}
+              onChange={(e) => setPortions(parseInt(e.target.value))}
+            />
+
             <span className="mx-3 whitespace-nowrap"> {diet}</span>
           </div>
         </div>
