@@ -2,17 +2,19 @@ import React, { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { supabase } from '../utils/supabaseClient'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 const SignIn = () => {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const supabaseClient = useSupabaseClient()
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabaseClient.auth.signInWithPassword({
       email,
       password,
     })

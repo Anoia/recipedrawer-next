@@ -1,6 +1,6 @@
 import { ingredient } from '@prisma/client'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useEffect, useRef, useState } from 'react'
-import { supabase } from '../../utils/supabaseClient'
 
 function CreateIngredient(props: {
   isOpen: boolean
@@ -8,6 +8,7 @@ function CreateIngredient(props: {
   close: () => void
   created: (i: ingredient) => void
 }) {
+  const supabaseClient = useSupabaseClient()
   const [newIngredientName, setNewIngredientName] = useState(props.input)
 
   const [diet, setDiet] = useState('vegan')
@@ -33,7 +34,7 @@ function CreateIngredient(props: {
 
   const create = async () => {
     if (newIngredientName.trim() != '') {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('ingredient')
         .insert({
           name: newIngredientName,

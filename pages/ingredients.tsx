@@ -1,8 +1,8 @@
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { NextPage } from 'next'
 import { useState, useEffect } from 'react'
 import CreateIngredient from '../components/edit/createingredient'
-
-import { supabaseTyped } from '../utils/supabaseClient'
+import { Database } from '../supabasetypes'
 
 type ingredient = {
   id: number
@@ -12,6 +12,7 @@ type ingredient = {
 }
 
 const IngredientsPage: NextPage = () => {
+  const supabaseTyped = useSupabaseClient<Database>()
   const [ingredients, setIngredients] = useState<Array<ingredient>>([])
 
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -25,7 +26,7 @@ const IngredientsPage: NextPage = () => {
     }
 
     fetchIngredients()
-  }, [])
+  }, [supabaseTyped])
 
   return (
     <div className="container mx-auto my-12 max-w-4xl">

@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import Image from 'next/legacy/image'
 import { useEffect, useState } from 'react'
-import { supabase } from '../utils/supabaseClient'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -12,13 +12,6 @@ function RecipeCard(props: any) {
   const recipe = props.recipe
 
   return (
-    // <li>
-    //   <Link href={`/recipe/${recipe.id}`}>
-    //     <a>
-    //       {recipe.id} - {recipe.name}
-    //     </a>
-    //   </Link>
-    // </li>
     <div className=" py-6 px-6 w-1/3 ">
       <Link href={`/recipe/${recipe.id}`}>
         <div className=" border shadow-md border-gray-300 max-w-sm h-80 flex flex-col">
@@ -42,12 +35,6 @@ function RecipeCard(props: any) {
             {/* <p className="text-gray-700 text-base mb-4">
               {recipe.description}
             </p> */}
-            {/* <button
-          type="button"
-          className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-        >
-          Button
-        </button> */}
           </div>
         </div>
       </Link>
@@ -57,19 +44,19 @@ function RecipeCard(props: any) {
 
 function RecipeList() {
   const [data, setData] = useState<any[]>([])
-
-  const testRecipe = async () => {
-    const { data: recipes, error } = await supabase
-      .from('recipe')
-      .select('id, name, description, image')
-
-    if (error) console.log(JSON.stringify(error))
-    if (recipes) setData(recipes.sort((a, b) => (a.id > b.id ? 1 : 0)))
-  }
+  const supabaseClient = useSupabaseClient()
 
   useEffect(() => {
-    testRecipe()
-  }, [])
+    const fetchRecipes = async () => {
+      const { data: recipes, error } = await supabaseClient
+        .from('recipe')
+        .select('id, name, description, image')
+
+      if (error) console.log(JSON.stringify(error))
+      if (recipes) setData(recipes.sort((a, b) => (a.id > b.id ? 1 : 0)))
+    }
+    fetchRecipes()
+  }, [supabaseClient])
 
   return (
     <div className="container mx-auto my-12 max-w-5xl">

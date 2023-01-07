@@ -1,12 +1,14 @@
 import { unit } from '@prisma/client'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { NextPage } from 'next'
 import { MouseEventHandler, useEffect, useState } from 'react'
 import StandardInput, {
   StandardInputLabel,
 } from '../components/lib/styledcomponents'
-import { supabaseTyped } from '../utils/supabaseClient'
+import { Database } from '../supabasetypes'
 
 const UnitsPage: NextPage = () => {
+  const supabaseTyped = useSupabaseClient<Database>()
   const [units, setUnits] = useState<Array<unit>>([])
 
   useEffect(() => {
@@ -18,7 +20,56 @@ const UnitsPage: NextPage = () => {
     }
 
     fetchUnits()
-  }, [])
+  }, [supabaseTyped])
+
+  function CreateNewUnit(newUnit: (u: unit) => void) {
+    const [shortName, setShortName] = useState<string>('')
+    const [longName, setLongName] = useState<string>('')
+
+    const handleSave: MouseEventHandler = async (e) => {
+      e.preventDefault
+      const result = await supabaseTyped
+        .from('unit')
+        .insert({
+          long_name: longName,
+          short_name: shortName,
+        })
+        .select()
+
+      if (result.error) console.log('Error on insert: ' + result.error)
+      if (result.data) newUnit(result.data[0])
+      setShortName('')
+      setLongName('')
+    }
+
+    return (
+      <div className="flex items-end space-x-5">
+        <div>
+          <StandardInputLabel>Short Name</StandardInputLabel>
+          <StandardInput
+            value={shortName}
+            onChange={(i) => setShortName(i.target.value)}
+          ></StandardInput>
+        </div>
+
+        <div>
+          <StandardInputLabel>Long Name</StandardInputLabel>
+          <StandardInput
+            value={longName}
+            onChange={(i) => setLongName(i.target.value)}
+          ></StandardInput>
+        </div>
+        <div>
+          <button
+            className="hover:bg-teal-800 focus:bg-teal-800 bg-teal-700 text-white py-3 px-12"
+            onClick={handleSave}
+          >
+            Speichern
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto my-12 max-w-4xl">
@@ -40,52 +91,3 @@ const UnitsPage: NextPage = () => {
 }
 
 export default UnitsPage
-
-function CreateNewUnit(newUnit: (u: unit) => void) {
-  const [shortName, setShortName] = useState<string>('')
-  const [longName, setLongName] = useState<string>('')
-
-  const handleSave: MouseEventHandler = async (e) => {
-    e.preventDefault
-    const result = await supabaseTyped
-      .from('unit')
-      .insert({
-        long_name: longName,
-        short_name: shortName,
-      })
-      .select()
-
-    if (result.error) console.log('Error on insert: ' + result.error)
-    if (result.data) newUnit(result.data[0])
-    setShortName('')
-    setLongName('')
-  }
-
-  return (
-    <div className="flex items-end space-x-5">
-      <div>
-        <StandardInputLabel>Short Name</StandardInputLabel>
-        <StandardInput
-          value={shortName}
-          onChange={(i) => setShortName(i.target.value)}
-        ></StandardInput>
-      </div>
-
-      <div>
-        <StandardInputLabel>Long Name</StandardInputLabel>
-        <StandardInput
-          value={longName}
-          onChange={(i) => setLongName(i.target.value)}
-        ></StandardInput>
-      </div>
-      <div>
-        <button
-          className="hover:bg-teal-800 focus:bg-teal-800 bg-teal-700 text-white py-3 px-12"
-          onClick={handleSave}
-        >
-          Speichern
-        </button>
-      </div>
-    </div>
-  )
-}

@@ -5,16 +5,17 @@ import {
   TypedRecipeIngredient,
   TypedRecipeSection,
 } from '../../pages/edit/[id]'
-import { supabase } from '../../utils/supabaseClient'
 import IngredientInput from './ingredientinput'
 import SectionInput from './sectioninput'
 import { ReactSortable } from 'react-sortablejs'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 function IngredientList(props: {
   ingredients: Array<IngredientOrSection>
 
   onIngredientsChanged: (i: Array<IngredientOrSection>) => void
 }) {
+  const supabaseClient = useSupabaseClient()
   const [currentlyEditingIngredient, setCurrentlyEditingIngredient] =
     useState(-1)
 
@@ -25,14 +26,16 @@ function IngredientList(props: {
 
   useEffect(() => {
     const fetchIngredients = async () => {
-      const { data, error } = await supabase.from('ingredient').select('*')
+      const { data, error } = await supabaseClient
+        .from('ingredient')
+        .select('*')
 
       if (error) console.log(JSON.stringify(error))
       if (data) setIngredients(data)
     }
 
     const fetchUnits = async () => {
-      const { data, error } = await supabase.from('unit').select('*')
+      const { data, error } = await supabaseClient.from('unit').select('*')
 
       if (error) console.log(JSON.stringify(error))
       if (data) setUnits(data)
@@ -40,7 +43,7 @@ function IngredientList(props: {
 
     fetchIngredients()
     fetchUnits()
-  }, [])
+  }, [supabaseClient])
 
   useEffect(() => {
     if (currentlyEditingIngredient > -1) {

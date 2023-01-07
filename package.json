@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
+    "@supabase/auth-helpers-nextjs": "^0.5.2",
+    "@supabase/auth-helpers-react": "^0.3.1",
     "@supabase/supabase-js": "^2.2.2",
     "babel-plugin-superjson-next": "^0.4.3",
     "fuzzysort": "^2.0.1",

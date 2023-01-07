@@ -17,7 +17,9 @@ function CreateRecipePage() {
 
     if (response.status === 200) {
       const resp = (await response.json()) as CreateResponseData
-      router.push(`/recipe/${resp.id}`)
+      if ('id' in resp) {
+        router.push(`/recipe/${resp.id}`)
+      }
     } else {
       console.log(
         `error during saving, got status ${response.status}: ${JSON.stringify(

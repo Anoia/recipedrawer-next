@@ -2,17 +2,17 @@ import React, { MouseEventHandler, useEffect, useState } from 'react'
 
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/router'
-
-import { supabase } from '../utils/supabaseClient'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 const Dashboard = () => {
   const router = useRouter()
+  const supabaseClient = useSupabaseClient()
   const [user, setUser] = useState<User | null>()
 
   const handleLogOut: MouseEventHandler = async (e) => {
     e.preventDefault()
 
-    const { error } = await supabase.auth.signOut()
+    const { error } = await supabaseClient.auth.signOut()
 
     if (error) {
       alert(JSON.stringify(error))
@@ -23,7 +23,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getProfile = async () => {
-      const profile = await supabase.auth.getUser()
+      const profile = await supabaseClient.auth.getUser()
 
       if (profile) {
         setUser(profile.data.user)
@@ -33,7 +33,7 @@ const Dashboard = () => {
     }
 
     getProfile()
-  }, [router])
+  }, [router, supabaseClient.auth])
 
   if (!user) {
     // Currently loading asynchronously User Supabase Information

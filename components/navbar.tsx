@@ -1,14 +1,16 @@
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
-import { supabase } from '../utils/supabaseClient'
 import { Fragment, useEffect, useState } from 'react'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
 
 function Navbar() {
   const [user, setUser] = useState<User | null>()
+  const supabaseClient = useSupabaseClient()
 
-  useEffect(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  supabaseClient.auth.onAuthStateChange(async (_event, _session) => {
     const getProfile = async () => {
-      const profile = await supabase.auth.getUser()
+      const profile = await supabaseClient.auth.getUser()
 
       if (profile) {
         setUser(profile.data.user)
@@ -18,7 +20,21 @@ function Navbar() {
     }
 
     getProfile()
-  }, [])
+  })
+
+  useEffect(() => {
+    const getProfile = async () => {
+      const profile = await supabaseClient.auth.getUser()
+
+      if (profile) {
+        setUser(profile.data.user)
+      } else {
+        setUser(null)
+      }
+    }
+
+    getProfile()
+  }, [supabaseClient.auth])
 
   return (
     <div className="bg-slate-700 text-white flex flex-col w-full items-center justify-center px-20 text-center">
