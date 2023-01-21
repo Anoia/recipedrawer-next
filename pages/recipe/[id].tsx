@@ -6,9 +6,10 @@ import {
   getRecipeForId,
   Step,
 } from '../../utils/prisma/recipe'
-import Image from "next/legacy/image";
+import Image from 'next/legacy/image'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -32,7 +33,10 @@ function IngredientList(props: { ingredients: completeRecipeIngredient[] }) {
                 )}
               <li className="py-1">
                 <span>
-                  {i.amount} {i.unit.short_name} {i.ingredient.name}
+                  {i.amount} {i.unit.short_name}{' '}
+                  <Link href={`/ingredient/${i.ingredient_id}`}>
+                    {i.ingredient.name}
+                  </Link>
                 </span>
                 <span className="ml-2 text-sm text-gray-600">
                   {i.extra_info}

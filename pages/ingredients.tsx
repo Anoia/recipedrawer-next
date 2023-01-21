@@ -1,5 +1,6 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { NextPage } from 'next'
+import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import CreateIngredient from '../components/edit/createingredient'
 import { Database } from '../supabasetypes'
@@ -43,7 +44,9 @@ const IngredientsPage: NextPage = () => {
         {ingredients.map((i) => {
           return (
             <li key={i.id}>
-              {i.name} - {i.diet}
+              <Link href={`/ingredient/${i.id}`}>
+                {i.name} - {i.diet}
+              </Link>
             </li>
           )
         })}
