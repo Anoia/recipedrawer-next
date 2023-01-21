@@ -100,7 +100,7 @@ function IngredientInput(props: {
   }, [props.ingredients, matchResult])
 
   function escapeReg(i: string) {
-    return i.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return i.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
   }
 
   function findPossibleUnits(unitName: string): unit[] {
@@ -212,10 +212,12 @@ function IngredientInput(props: {
   }
 
   const onBlur = () => {
-    setuserInputString(props.input)
-    setInputFocused(false)
-    if (props.blur) {
-      props.blur()
+    if (!dialogOpen) {
+      setuserInputString(props.input)
+      setInputFocused(false)
+      if (props.blur) {
+        props.blur()
+      }
     }
   }
 
