@@ -186,6 +186,9 @@ function IngredientInput(props: {
     }
   }
 
+  const defaultUnit =
+    props.units.find((x) => x.long_name == 'Stück') ?? props.units[0]
+
   const doSelect = () => {
     if (matchResult) {
       const selected = fuzzyIngredients[currentIngredientSelectionIndex]
@@ -199,7 +202,7 @@ function IngredientInput(props: {
           id: Date.now().toString(),
           ingredient_id: selected.id,
           amount: matchResult.amount,
-          unit: matchResult.unit || props.units[0],
+          unit: matchResult.unit || defaultUnit,
           diet: selected.diet,
           extraInfo: matchResult.extraInfo,
         }
