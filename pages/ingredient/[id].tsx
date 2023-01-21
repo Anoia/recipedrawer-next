@@ -32,6 +32,21 @@ function IngredientPage(data: ingredientWithRecipe) {
             </div>
           </Link>
         )}
+
+        {data.recipe_ingredient && (
+          <div>
+            <h1 className="text-xl my-2">Verwendet in:</h1>
+            <ul>
+              {data.recipe_ingredient.map((r) => {
+                return (
+                  <li key={r.recipe.id}>
+                    <Link href={`/recipe/${r.recipe.id}`}>{r.recipe.name}</Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   )
