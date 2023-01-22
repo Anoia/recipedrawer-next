@@ -4,7 +4,7 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { EditableRecipe } from '../pages/edit/[id]'
+import { EditableRecipe, RecipeSource } from '../pages/edit/[id]'
 import { Step } from '../utils/prisma/recipe'
 import IngredientList from './edit/ingredientlist'
 import StepList from './edit/steplist'
@@ -30,6 +30,10 @@ function Editorcreate(props: {
 
   const [diet, setDiet] = useState(props.recipe.diet)
 
+  const [source, setSource] = useState<RecipeSource | undefined>(
+    props.recipe.source
+  )
+
   useEffect(() => {
     const dietOrder = ['vegan', 'vegetarian', 'fish', 'meat']
 
@@ -54,6 +58,7 @@ function Editorcreate(props: {
       portions: portions,
       diet: diet,
       image: image,
+      source: source,
     }
     props.save(resultingRecipe)
   }
@@ -124,8 +129,34 @@ function Editorcreate(props: {
 
             <span className="mx-3 whitespace-nowrap"> {diet}</span>
           </div>
+          <div className="x-3 pl-3 flex">
+            <span className="x-3 pl-3">Quelle:</span>
+            <input
+              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+              type="text"
+              value={source?.name ?? ''}
+              placeholder="Quelle"
+              onChange={(e) =>
+                setSource((s) => {
+                  return { name: e.target.value, link: s?.link ?? '' }
+                })
+              }
+            />
+            <input
+              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+              type="text"
+              value={source?.link ?? ''}
+              placeholder="Link"
+              onChange={(e) =>
+                setSource((s) => {
+                  return { link: e.target.value, name: s?.name ?? '' }
+                })
+              }
+            />
+          </div>
         </div>
       </div>
+
       <div className="flex gap-20">
         <div className="basis-1/3">
           <IngredientList

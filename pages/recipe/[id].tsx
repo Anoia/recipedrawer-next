@@ -10,6 +10,7 @@ import Image from 'next/legacy/image'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { RecipeSource } from '../edit/[id]'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -74,7 +75,7 @@ function RecipePage(data: completeRecipe) {
       <Head>
         <title>{data.name} - Recipe Drawer</title>
       </Head>
-      <div className="bg-slate-600 h-80 relative">
+      <div className="bg-slate-600 h-96 relative">
         {data.image && (
           <Image
             src={calulateImagePath(data.image)}
@@ -96,6 +97,7 @@ function RecipePage(data: completeRecipe) {
             </span>
             <span className="mx-3 whitespace-nowrap"> {data.diet}</span>
           </div>
+          {sourceLink(data.source as RecipeSource)}
         </div>
       </div>
       <div className="flex gap-20">
@@ -116,6 +118,25 @@ function RecipePage(data: completeRecipe) {
       </div>
     </div>
   )
+}
+
+function sourceLink(source: RecipeSource) {
+  if (source && source.name) {
+    if (source.link) {
+      return (
+        <div className="mx-3 ">
+          Quelle:{' '}
+          <Link href={source.link} className="hover:underline" target="_blank">
+            {source.name}
+          </Link>
+        </div>
+      )
+    } else {
+      return <div className="mx-3 ">Quelle: {source.name}</div>
+    }
+  } else {
+    return <></>
+  }
 }
 
 export default RecipePage

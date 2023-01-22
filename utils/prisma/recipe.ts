@@ -114,6 +114,7 @@ export async function saveRecipe(
       portions: recipe.portions,
       image: recipe.image,
       steps: recipe.steps,
+      source: recipe.source,
       recipe_ingredient: {
         deleteMany: [
           {
@@ -146,6 +147,7 @@ export async function createRecipe(recipe: EditableRecipe): Promise<recipe> {
       portions: recipe.portions,
       image: recipe.image,
       steps: recipe.steps,
+      source: recipe.source,
       recipe_ingredient: {
         create: recipeIngredients.new,
       },

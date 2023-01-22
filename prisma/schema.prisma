@@ -29,6 +29,7 @@ model recipe {
   prep_time         Unsupported("interval")?
   portions          Int
   diet              String
+  source            Json?
   ingredient        ingredient[]
   recipe_ingredient recipe_ingredient[]
 }
