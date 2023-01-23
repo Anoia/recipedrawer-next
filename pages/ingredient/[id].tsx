@@ -67,15 +67,22 @@ export async function getServerSideProps(
       console.log(`parsed ${id}`)
       if (!Number.isNaN(id)) {
         console.log(`trying to get data`)
-        const recipe = await getIngredientForId(id)
+        const ingredient = await getIngredientForId(id)
+        console.log(`retrieved: ${ingredient}`)
 
-        if (recipe) {
-          return { props: recipe }
+        if (ingredient) {
+          return { props: ingredient }
         }
       }
     }
   } catch (e) {
     console.log(`error: ${JSON.stringify(e)}`)
+    if (typeof e === 'string') {
+      console.log(`errorstring ${e}`)
+    } else if (e instanceof Error) {
+      console.log(`error message ${e.message}`)
+    }
+    console.log(`trying write: ${e}`)
   }
 
   return {
