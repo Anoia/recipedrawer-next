@@ -57,18 +57,25 @@ export default IngredientPage
 export async function getServerSideProps(
   context: GetServerSidePropsContext
 ): Promise<GetServerSidePropsResult<ingredientWithRecipe>> {
-  const { id: queryIdString } = context.query
+  try {
+    const { id: queryIdString } = context.query
 
-  if (queryIdString && typeof queryIdString === 'string') {
-    const id = parseInt(queryIdString)
+    console.log(`ingredient page for ${queryIdString}`)
 
-    if (!Number.isNaN(id)) {
-      const recipe = await getIngredientForId(id)
+    if (queryIdString && typeof queryIdString === 'string') {
+      const id = parseInt(queryIdString)
+      console.log(`parsed ${id}`)
+      if (!Number.isNaN(id)) {
+        console.log(`trying to get data`)
+        const recipe = await getIngredientForId(id)
 
-      if (recipe) {
-        return { props: recipe }
+        if (recipe) {
+          return { props: recipe }
+        }
       }
     }
+  } catch (e) {
+    console.log(`error: ${JSON.stringify(e)}`)
   }
 
   return {
