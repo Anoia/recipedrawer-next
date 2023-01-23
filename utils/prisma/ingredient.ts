@@ -1,13 +1,14 @@
 import { ingredient } from '@prisma/client'
+import prismaClientGlobal from './client'
 
 export type miniRecipe = {
   id: number
   name: string
-  image: string
+  image: string | null
 }
 
 export type ingredientRecipe = {
-  recipe: miniRecipe
+  recipe: miniRecipe | null
   recipe_ingredient: Array<{ recipe: miniRecipe }>
 }
 
