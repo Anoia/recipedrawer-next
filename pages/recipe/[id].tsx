@@ -70,10 +70,11 @@ function StepList(props: { steps: Step[] }) {
 
 function RecipePage(data: completeRecipe) {
   const router = useRouter()
+  const title = `${data.name} - Recipe Drawer`
   return (
     <div className="container mx-auto my-12 max-w-4xl">
       <Head>
-        <title>{data.name} - Recipe Drawer</title>
+        <title>{title}</title>
       </Head>
       <div className="bg-slate-600 h-96 relative">
         {data.image && (
