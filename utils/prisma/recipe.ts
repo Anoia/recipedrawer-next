@@ -114,7 +114,7 @@ export async function saveRecipe(
       portions: recipe.portions,
       image: recipe.image,
       steps: recipe.steps,
-      source: recipe.source,
+      source: recipe.source || undefined,
       recipe_ingredient: {
         deleteMany: [
           {
