@@ -76,6 +76,8 @@ function RecipePage(data: completeRecipe) {
       <Head>
         <title>{title}</title>
       </Head>
+
+      {/* TITLE IMAGE */}
       <div className="bg-slate-600 h-96 relative">
         {data.image && (
           <Image
@@ -86,12 +88,14 @@ function RecipePage(data: completeRecipe) {
           />
         )}
       </div>
-      <div className="my-16 flex justify-between items-baseline">
+
+      {/* NAME AND DESCRPITION */}
+      <div className="my-16 flex flex-col sm:flex-row justify-between items-baseline">
         <div>
           <h1 className="text-4xl mx-3">{data.name} </h1>
           <p className="text-gray-600 mx-3"> {data.description}</p>
         </div>
-        <div className="">
+        <div className="mt-6 sm:mt-0 ">
           <div className="flex flex-nowrap">
             <span className="mx-3 whitespace-nowrap">
               {data.portions} Portionen
@@ -101,14 +105,18 @@ function RecipePage(data: completeRecipe) {
           {sourceLink(data.source as RecipeSource)}
         </div>
       </div>
-      <div className="flex gap-20">
-        <div className="basis-1/3">
+
+      {/* INREDIENTS AND STEPS */}
+      <div className="flex flex-col sm:flex-row gap-20">
+        <div className="sm:basis-1/3">
           <IngredientList ingredients={data.recipe_ingredient} />
         </div>
-        <div className="basis-2/3">
+        <div className="sm:basis-2/3 mx-3 sm:mx-0">
           <StepList steps={data.steps as Step[]} />
         </div>
       </div>
+
+      {/* EDIT BUTTON */}
       <div className="flex justify-end">
         <button
           className="my-24 mx-3 hover:bg-slate-800 focus:bg-slate-800 py-3 px-12 bg-slate-700 text-white"
