@@ -1,7 +1,7 @@
 export declare type Maybe<T> = null | undefined | T
 
 export const regexStringIngredientInput =
-  /([0-9.,]{1,})([ ]*)([a-zA-ZäÄöÖüÜß]{0,})([ ]+)([a-zA-ZäÄöÖüÜß ]+)(\(\(([a-zA-ZäÄöÖüÜß ,.!-]+)\)\))*/
+  /([0-9.,]{1,})([ ]*)([a-zA-ZäÄöÖüÜß]{0,})([ ]+)([a-zA-Z0-9äÄöÖüÜß ]+)(\(\(([a-zA-Z0-9äÄöÖüÜß ,.!-]+)\)\))*/
 
 export type MatchResult = {
   amount: number
