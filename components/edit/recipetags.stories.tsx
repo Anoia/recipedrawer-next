@@ -1,4 +1,4 @@
-import { action, Story } from '@ladle/react'
+import { action } from '@ladle/react'
 import RecipeTags, { TagsDisplay } from './recipetags'
 
 export const recipeTagsEdit = () => (

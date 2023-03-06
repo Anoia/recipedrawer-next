@@ -99,60 +99,63 @@ function Editorcreate(props: {
       <div>
         <input type="file" onChange={uploadFile} />
       </div>
-      <div className="my-16 flex justify-between items-baseline">
-        <div className="">
-          <input
-            className="w-full text-4xl mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Rezeptname"
-          />
-          {/* <h1 className="text-4xl mx-3">{data.name} </h1> */}
-          <input
-            className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Beschreibung"
-          />
-        </div>
-        <div className="">
-          <div className="flex flex-nowrap">
-            <span className="mx-3 pl-3 whitespace-nowrap"> Portionen:</span>
-            <input
-              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
-              type="number"
-              value={portions}
-              onChange={(e) => setPortions(parseInt(e.target.value))}
-            />
 
-            <span className="mx-3 whitespace-nowrap"> {diet}</span>
+      <div className="my-16">
+        <div className="flex justify-between items-baseline">
+          <div className="">
+            <input
+              className="w-full text-4xl mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Rezeptname"
+            />
+            {/* <h1 className="text-4xl mx-3">{data.name} </h1> */}
+            <input
+              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Beschreibung"
+            />
           </div>
-          <div className="x-3 pl-3 flex">
-            <span className="x-3 pl-3">Quelle:</span>
-            <input
-              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
-              type="text"
-              value={source?.name ?? ''}
-              placeholder="Quelle"
-              onChange={(e) =>
-                setSource((s) => {
-                  return { name: e.target.value, link: s?.link ?? '' }
-                })
-              }
-            />
-            <input
-              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
-              type="text"
-              value={source?.link ?? ''}
-              placeholder="Link"
-              onChange={(e) =>
-                setSource((s) => {
-                  return { link: e.target.value, name: s?.name ?? '' }
-                })
-              }
-            />
+          <div className="">
+            <div className="flex flex-nowrap">
+              <span className="mx-3 pl-3 whitespace-nowrap"> Portionen:</span>
+              <input
+                className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+                type="number"
+                value={portions}
+                onChange={(e) => setPortions(parseInt(e.target.value))}
+              />
+
+              <span className="mx-3 whitespace-nowrap"> {diet}</span>
+            </div>
+            <div className="x-3 pl-3 flex">
+              <span className="x-3 pl-3">Quelle:</span>
+              <input
+                className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+                type="text"
+                value={source?.name ?? ''}
+                placeholder="Quelle"
+                onChange={(e) =>
+                  setSource((s) => {
+                    return { name: e.target.value, link: s?.link ?? '' }
+                  })
+                }
+              />
+              <input
+                className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+                type="text"
+                value={source?.link ?? ''}
+                placeholder="Link"
+                onChange={(e) =>
+                  setSource((s) => {
+                    return { link: e.target.value, name: s?.name ?? '' }
+                  })
+                }
+              />
+            </div>
           </div>
         </div>
       </div>

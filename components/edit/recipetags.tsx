@@ -9,7 +9,7 @@ export type RecipeTagsPros = {
 
 function RecipeTags(props: RecipeTagsPros) {
   const removeTag = (i: number) => {
-    const tags = props.tags
+    const tags = [...props.tags]
     tags.splice(i, 1)
     return tags
   }
