@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
+import { GetStaticPaths, GetStaticProps } from 'next'
 import React, { Fragment } from 'react'
 import {
   completeRecipeIngredient,
@@ -11,6 +11,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { RecipeSource } from '../edit/[id]'
+import { ParsedUrlQuery } from 'querystring'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -150,10 +151,20 @@ function sourceLink(source: RecipeSource) {
 
 export default RecipePage
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext
-): Promise<GetServerSidePropsResult<completeRecipe>> {
-  const { id: queryIdString } = context.query
+interface Params extends ParsedUrlQuery {
+  id: string
+}
+
+export const getStaticPaths: GetStaticPaths<Params> = async () => {
+  return {
+    paths: new Array<{ params: Params }>(),
+    fallback: 'blocking',
+  }
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const { id: queryIdString } = context.params!
 
   if (queryIdString && typeof queryIdString === 'string') {
     const id = parseInt(queryIdString)
