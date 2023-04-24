@@ -24,7 +24,10 @@ function EditRecipePage({
     })
 
     if (response.status === 200) {
-      router.push(`/recipe/${id}`)
+      router.push(`/recipe/${id}`, undefined, {
+        unstable_skipClientCache: true,
+        shallow: false,
+      })
     } else {
       console.log(
         `error during saving, got status ${response.status}: ${JSON.stringify(
