@@ -87,7 +87,7 @@ function Editorcreate(props: {
   return (
     <div className="container mx-auto  my-12 max-w-4xl">
       <div className="bg-slate-600 h-80 relative">
-        {props.recipe.image && (
+        {image && (
           <Image
             src={calulateImagePath(image)}
             layout="fill"
