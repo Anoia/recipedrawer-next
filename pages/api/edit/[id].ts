@@ -29,6 +29,7 @@ export default async function handler(
     const input = req.body as EditableRecipe
 
     const result = await saveRecipe(id as number, input)
+    await res.revalidate(`/recipe/${queryIdString}`)
     res.status(200).json({ id: result.id, name: result.name })
   } else {
     console.log('unexpected query or user')
