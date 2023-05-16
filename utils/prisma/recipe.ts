@@ -38,6 +38,24 @@ export async function getRecipeForId(
   })
 }
 
+export async function getRecipeForSlug(
+  slug: string
+): Promise<completeRecipe | null> {
+  return prismaClientGlobal.recipe.findUnique({
+    where: {
+      slug: slug,
+    },
+    include: {
+      recipe_ingredient: {
+        include: {
+          ingredient: true,
+          unit: true,
+        },
+      },
+    },
+  })
+}
+
 export type new_recipe_ingredient = {
   ingredient_id: number
   amount: number
@@ -115,6 +133,7 @@ export async function saveRecipe(
       image: recipe.image,
       steps: recipe.steps,
       source: recipe.source || undefined,
+      slug: recipe.slug || undefined,
       recipe_ingredient: {
         deleteMany: [
           {
@@ -148,6 +167,7 @@ export async function createRecipe(recipe: EditableRecipe): Promise<recipe> {
       image: recipe.image,
       steps: recipe.steps,
       source: recipe.source,
+      slug: recipe.slug,
       recipe_ingredient: {
         create: recipeIngredients.new,
       },

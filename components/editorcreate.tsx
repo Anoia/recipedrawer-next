@@ -34,6 +34,19 @@ function Editorcreate(props: {
     props.recipe.source
   )
 
+  const [slug, setSlug] = useState<string | undefined>(props.recipe.slug)
+
+  useEffect(() => {
+    const slugify = (str: string) =>
+      str
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+    setSlug(slugify(name))
+  }, [name])
+
   useEffect(() => {
     const dietOrder = ['vegan', 'vegetarian', 'fish', 'meat']
 
@@ -59,6 +72,7 @@ function Editorcreate(props: {
       diet: diet,
       image: image,
       source: source,
+      slug: slug,
     }
     props.save(resultingRecipe)
   }
@@ -117,6 +131,13 @@ function Editorcreate(props: {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Beschreibung"
+            />
+            <input
+              className="w-full  text-gray-600 mx-3 focus:outline-none focus:ring-0 border border-white focus:border-gray-400 hover:focus:border-solid hover:border-dashed hover:border-gray-500"
+              type="text"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder="Slug"
             />
           </div>
           <div className="">
