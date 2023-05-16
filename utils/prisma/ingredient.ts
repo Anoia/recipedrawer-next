@@ -5,6 +5,7 @@ export type miniRecipe = {
   id: number
   name: string
   image: string | null
+  slug: string | null
 }
 
 export type ingredientRecipe = {
@@ -27,6 +28,7 @@ export async function getIngredientForId(
           name: true,
           id: true,
           image: true,
+          slug: true,
         },
       },
       recipe_ingredient: {
@@ -36,6 +38,7 @@ export async function getIngredientForId(
               name: true,
               id: true,
               image: true,
+              slug: true,
             },
           },
         },

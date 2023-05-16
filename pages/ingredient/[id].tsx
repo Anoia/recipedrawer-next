@@ -18,7 +18,7 @@ function IngredientPage(data: ingredientWithRecipe) {
         <h1 className="text-2xl my-2">{data.name}</h1>
         <p>{data.diet}</p>
         {data.recipe && (
-          <Link href={`/recipe/${data.recipe.id}`}>
+          <Link href={`/recipe/${data.recipe.slug || data.recipe.id}`}>
             <div className="flex ">
               {data.recipe.image && (
                 <Image
@@ -40,7 +40,9 @@ function IngredientPage(data: ingredientWithRecipe) {
               {data.recipe_ingredient.map((r) => {
                 return (
                   <li key={r.recipe.id}>
-                    <Link href={`/recipe/${r.recipe.id}`}>{r.recipe.name}</Link>
+                    <Link href={`/recipe/${r.recipe.slug || r.recipe.id}`}>
+                      {r.recipe.name}
+                    </Link>
                   </li>
                 )
               })}
