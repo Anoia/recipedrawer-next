@@ -44,8 +44,11 @@ function Editorcreate(props: {
         .replace(/[^\w\s-]/g, '')
         .replace(/[\s_-]+/g, '-')
         .replace(/^-+|-+$/g, '')
-    setSlug(slugify(name))
-  }, [name])
+
+    if (!props.recipe.slug) {
+      setSlug(slugify(name))
+    }
+  }, [name, props.recipe.slug])
 
   useEffect(() => {
     const dietOrder = ['vegan', 'vegetarian', 'fish', 'meat']
