@@ -53,7 +53,7 @@ function RecipeList() {
         .select('id, name, description, image, slug')
 
       if (error) console.log(JSON.stringify(error))
-      if (recipes) setData(recipes.sort((a, b) => (a.id > b.id ? 0 : 1)))
+      if (recipes) setData(recipes.sort((a, b) => (a.id > b.id ? -1 : 1)))
     }
     fetchRecipes()
   }, [supabaseClient])
