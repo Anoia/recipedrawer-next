@@ -13,7 +13,7 @@ function RecipeCard(props: any) {
 
   return (
     <div className=" py-6 px-6">
-      <Link href={`/recipe/${recipe.id}`}>
+      <Link href={`/recipe/${recipe.slug || recipe.id}`}>
         <div className=" border shadow-md border-gray-300 max-w-sm h-80 flex flex-col">
           <div className="bg-slate-600 flex-1 relative">
             {recipe.image && (
@@ -50,7 +50,7 @@ function RecipeList() {
     const fetchRecipes = async () => {
       const { data: recipes, error } = await supabaseClient
         .from('recipe')
-        .select('id, name, description, image')
+        .select('id, name, description, image, slug')
 
       if (error) console.log(JSON.stringify(error))
       if (recipes) setData(recipes.sort((a, b) => (a.id > b.id ? 0 : 1)))

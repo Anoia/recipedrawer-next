@@ -97,6 +97,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           recipe_ingredient: ingredients,
           steps: recipe.steps as Step[],
           source: recipe.source as RecipeSource,
+          slug: recipe.slug ?? undefined,
         }
 
         return {
@@ -151,6 +152,7 @@ export type EditableRecipe = {
   //   prepTime: string | undefined
   diet: string
   source: RecipeSource | undefined
+  slug: string | undefined
 }
 
 export const EmptyRecipe: EditableRecipe = {
@@ -164,4 +166,5 @@ export const EmptyRecipe: EditableRecipe = {
   //   prepTime: undefined,
   diet: 'vegan',
   source: undefined,
+  slug: undefined,
 }

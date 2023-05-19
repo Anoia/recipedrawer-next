@@ -5,6 +5,7 @@ import {
   completeRecipe,
   getRecipeForId,
   Step,
+  getRecipeForSlug,
 } from '../../utils/prisma/recipe'
 import Image from 'next/legacy/image'
 import Head from 'next/head'
@@ -171,6 +172,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     if (!Number.isNaN(id)) {
       const recipe = await getRecipeForId(id)
+
+      if (recipe) {
+        return { props: recipe }
+      }
+    } else {
+      const recipe = await getRecipeForSlug(queryIdString)
 
       if (recipe) {
         return { props: recipe }
