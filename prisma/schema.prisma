@@ -30,7 +30,6 @@ model recipe {
   portions          Int
   diet              String
   source            Json?
-  tags              String[]
   slug              String?                  @unique
   ingredient        ingredient[]
   recipe_ingredient recipe_ingredient[]
