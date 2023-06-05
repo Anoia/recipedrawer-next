@@ -8,13 +8,22 @@ function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
 }
 
+const styleForDiet = new Map([
+  ['vegan', 'text-green-600'],
+  ['vegetarian', 'text-lime-500'],
+  ['fish', 'text-blue-500'],
+  ['meat', 'text-red-500'],
+])
+
 function RecipeCard(props: any) {
   const recipe = props.recipe
+
+  const dietStyle = styleForDiet.get(recipe.diet) || 'text-gray-500'
 
   return (
     <div className=" py-6 px-6">
       <Link href={`/recipe/${recipe.slug || recipe.id}`}>
-        <div className=" border shadow-md border-gray-300 max-w-sm h-80 flex flex-col">
+        <div className=" max-w-sm h-80 flex flex-col">
           <div className="bg-slate-600 flex-1 relative">
             {recipe.image && (
               <Image
@@ -28,13 +37,13 @@ function RecipeCard(props: any) {
               />
             )}
           </div>
-          <div className="p-5 text-left">
+          <div className="p-2 text-left">
             <h5 className="text-gray-900 text-xl font-medium ">
               {recipe.name}
             </h5>
-            {/* <p className="text-gray-700 text-base mb-4">
-              {recipe.description}
-            </p> */}
+            <p className={`float-right  text-base ${dietStyle}`}>
+              {recipe.diet}
+            </p>
           </div>
         </div>
       </Link>
@@ -50,7 +59,7 @@ function RecipeList() {
     const fetchRecipes = async () => {
       const { data: recipes, error } = await supabaseClient
         .from('recipe')
-        .select('id, name, description, image, slug')
+        .select('id, name, description, image, slug, diet')
 
       if (error) console.log(JSON.stringify(error))
       if (recipes) setData(recipes.sort((a, b) => (a.id > b.id ? -1 : 1)))
