@@ -38,12 +38,12 @@ function RecipeCard(props: any) {
             )}
           </div>
           <div className="p-2 text-left">
-            <h5 className="text-gray-900 text-xl font-medium ">
-              {recipe.name}
-            </h5>
             <p className={`float-right  text-base ${dietStyle}`}>
               {recipe.diet}
             </p>
+            <h5 className="text-gray-900 text-xl font-medium ">
+              {recipe.name}
+            </h5>
           </div>
         </div>
       </Link>
