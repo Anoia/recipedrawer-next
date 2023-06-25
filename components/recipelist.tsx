@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
 import Image from 'next/legacy/image'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import StandardInput from './lib/styledcomponents'
 
 function calulateImagePath(img: string) {
   return `https://res.cloudinary.com/ddqdrc3ak/image/upload/${img}`
@@ -52,7 +53,10 @@ function RecipeCard(props: any) {
 }
 
 function RecipeList() {
-  const [data, setData] = useState<any[]>([])
+  const [initalRecipeData, setInitalRecipeData] = useState<any[]>([])
+  const [searchRecipeData, setSearchRecipeData] = useState<any[] | undefined>(
+    undefined
+  )
   const supabaseClient = useSupabaseClient()
 
   useEffect(() => {
@@ -62,15 +66,52 @@ function RecipeList() {
         .select('id, name, description, image, slug, diet')
 
       if (error) console.log(JSON.stringify(error))
-      if (recipes) setData(recipes.sort((a, b) => (a.id > b.id ? -1 : 1)))
+      if (recipes)
+        setInitalRecipeData(recipes.sort((a, b) => (a.id > b.id ? -1 : 1)))
     }
     fetchRecipes()
   }, [supabaseClient])
 
+  const [search, setSearch] = useState<string>('')
+
+  const keyDownHandler = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === 'Enter') {
+      const trimmedSearch = search.trim()
+      if (trimmedSearch != '') {
+        console.log(search)
+
+        const { data: recipes, error } = await supabaseClient
+          .from('recipe')
+          .select('id, name, description, image, slug, diet')
+          .ilike('name', `%${trimmedSearch}%`)
+
+        if (error) console.log(JSON.stringify(error))
+        if (recipes)
+          setSearchRecipeData(recipes.sort((a, b) => (a.id > b.id ? -1 : 1)))
+      } else {
+        setSearchRecipeData(undefined)
+        setSearch('')
+      }
+    }
+  }
+
   return (
-    <div className="container mx-auto my-12 max-w-5xl">
+    <div className="container mx-auto mb-12 max-w-5xl">
+      <div className="mb-12">
+        <StandardInput
+          placeholder="Suche nach Rezept"
+          value={search}
+          onKeyDown={keyDownHandler}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSearch(e.target.value)
+          }
+        />
+      </div>
+      <h1 className="text-4xl mx-3">
+        {searchRecipeData ? `Suche: ${search}` : 'neuste Rezepte'}{' '}
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  -mx-3 overflow-hidden">
-        {data.map((recipe) => (
+        {(searchRecipeData ?? initalRecipeData).map((recipe) => (
           <RecipeCard recipe={recipe} key={recipe.id} />
         ))}
       </div>
