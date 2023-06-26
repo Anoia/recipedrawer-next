@@ -81,9 +81,11 @@ function RecipeList() {
         console.log(search)
 
         const { data: recipes, error } = await supabaseClient
-          .from('recipe')
+          .from('search_index')
           .select('id, name, description, image, slug, diet')
-          .ilike('name', `%${trimmedSearch}%`)
+          .textSearch('vector', `${trimmedSearch}`, {
+            config: 'german',
+          })
 
         if (error) console.log(JSON.stringify(error))
         if (recipes)
