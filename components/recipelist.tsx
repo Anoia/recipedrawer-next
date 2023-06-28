@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from 'next/link'
-import Image from 'next/legacy/image'
+import Image from 'next/image'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import StandardInput from './lib/styledcomponents'
@@ -22,18 +22,16 @@ function RecipeCard(props: any) {
   const dietStyle = styleForDiet.get(recipe.diet) || 'text-gray-500'
 
   return (
-    <div className=" py-6 px-6">
+    <div className="py-3 px-6">
       <Link href={`/recipe/${recipe.slug || recipe.id}`}>
-        <div className=" max-w-sm h-80 flex flex-col">
-          <div className="bg-slate-600 flex-1 relative">
+        <div className=" max-w-sm ">
+          <div className="bg-slate-600 h-56 relative">
             {recipe.image && (
               <Image
-                className=" "
+                className="object-cover "
                 src={calulateImagePath(recipe.image)}
-                layout="fill"
-                objectFit="cover"
                 // width="100%"
-                // height="100%"
+                fill={true}
                 alt="alt text"
               />
             )}
@@ -112,7 +110,7 @@ function RecipeList() {
       <h1 className="text-4xl mx-3">
         {searchRecipeData ? `Suche: ${search}` : 'neuste Rezepte'}{' '}
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  -mx-3 overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  -mx-3 overflow-hidden auto-rows-fr">
         {(searchRecipeData ?? initalRecipeData).map((recipe) => (
           <RecipeCard recipe={recipe} key={recipe.id} />
         ))}

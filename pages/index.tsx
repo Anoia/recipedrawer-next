@@ -12,9 +12,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex w-full  justify-center text-center">
-        <div className="">
-          <RecipeList />
-        </div>
+        <RecipeList />
       </div>
     </div>
   )
