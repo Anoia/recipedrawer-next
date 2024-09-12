@@ -23,5 +23,5 @@ jobs:
           version: 1.27.1
 
       - run: |
-          supabase link --project-ref $PRODUCTION_PROJECT_ID
+          supabase link --debug --project-ref $PRODUCTION_PROJECT_ID
           supabase db push
