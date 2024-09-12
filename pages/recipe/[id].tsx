@@ -1,11 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import {
-  completeRecipeIngredient,
   completeRecipe,
+  completeRecipeIngredient,
   getRecipeForId,
-  Step,
   getRecipeForSlug,
+  Step,
 } from '../../utils/prisma/recipe'
 import Image from 'next/legacy/image'
 import Head from 'next/head'
@@ -19,8 +19,22 @@ function calulateImagePath(img: string) {
 }
 
 function IngredientList(props: { ingredients: completeRecipeIngredient[] }) {
+  const [amount, setAmount] = useState(1)
   return (
     <div className="mx-3">
+
+      <div className="flex items-center mb-5">
+        <span className="mr-3">Für {amount} Mal</span>
+        <input
+          type="number"
+          step={0.5}
+          min="0.00"
+          value={amount}
+          onChange={(e) => setAmount(parseFloat(e.target.value))}
+          className="ml-auto w-12 text-center"
+        ></input>
+      </div>
+
       <p className="text-2xl pb-3">Zutaten</p>
       <ul className="">
         {props.ingredients
@@ -36,7 +50,7 @@ function IngredientList(props: { ingredients: completeRecipeIngredient[] }) {
                 )}
               <li className="py-1">
                 <span>
-                  {i.amount} {i.unit.short_name}{' '}
+                  {i.amount * amount} {i.unit.short_name}{' '}
                   <Link href={`/ingredient/${i.ingredient_id}`}>
                     {i.ingredient.name}
                   </Link>
